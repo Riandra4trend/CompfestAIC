@@ -1,6 +1,6 @@
 # V3: Intelligent Web Scraping Through Specialized AI Agents
 
-## Introduction: The Data Accessibility Challenge in the AI Era
+## The Data Accessibility Challenge in the AI Era
 
 Data has become the fundamental resource driving modern business decisions, often described as "the new oil" of the digital economy. However, a critical gap exists between recognizing data's value and actually extracting it. Traditional web scraping presents significant engineering challenges: developers typically spend days or weeks crafting custom scripts for each target website, managing DOM variations, handling pagination logic, and maintaining brittle selectors that break with minor UI changes.
 
@@ -16,7 +16,7 @@ In an era where AI has democratized complex tasks through natural language inter
 
 This architecture allows users to execute comprehensive scraping workflows—traditionally requiring hundreds of lines of custom code—using simple prompts like "extract all product details from example.com."
 
-## System Architecture: A Three-Stage Pipeline
+## How A Three-Stage Pipeline Works
 
 V3 employs a **directed acyclic graph (DAG) architecture** rather than a looping agent system. Each graph operates as a specialized stage in a deterministic pipeline, with clear inputs, outputs, and handoff points.
 
@@ -49,12 +49,9 @@ Graph CBC targets intermediate pages that aggregate content—category pages, se
 
 On first execution against a new site, Graph CBC performs environmental analysis:
 
-- **Pagination detection**: Identifies numbered pages, "Next" buttons, or cursor-based pagination
-- **Infinite scroll recognition**: Detects dynamic content loading patterns
-- **Load-more mechanisms**: Handles progressive disclosure UI patterns
-- **Card/tile structure analysis**: Locates repeating elements containing links to detail pages
-
-The agent generates a **reusable extraction specification**—a structured file encoding the site's listing pattern, pagination logic, and link selectors. This specification is persisted to S3 storage.
+- **Website Environment Analysis**: The system conducts a comprehensive evaluation of the target website to understand its rendering behavior, data-loading mechanisms, and overall content structure. This includes identifying whether the site serves static content, dynamically rendered elements, or API-driven data, ensuring that all relevant information can be reliably captured.
+- **Field Localization**: The AI agent analyzes the page’s structural components—such as the DOM hierarchy, repeated patterns, and layout organization—to accurately identify and localize each required data field. This step establishes a precise mapping between the requested attributes and their corresponding elements on the webpage.
+- **Generation of Extraction Specification**: During its initial execution on a new domain, the CBC Graph generates a reusable extraction specification. This structured specification describes the site’s listing schema, rendering logic, pagination or navigation patterns, and link selectors. The resulting specification is then persisted to S3 storage, enabling consistent, efficient, and deterministic scraping in subsequent runs without repeating the full environmental analysis.
 
 **Subsequent executions** bypass the analysis phase entirely, applying the cached specification directly. This dramatically reduces both latency and token consumption, as the AI agent isn't invoked for pattern discovery.
 
@@ -72,7 +69,7 @@ Graph PDP extracts specific data fields from detail pages based on user-defined 
 2. **Extraction strategy generation**: Creates field-specific selectors or extraction logic
 3. **Schema generation**: Produces a reusable extraction specification
 4. **Data extraction**: Applies the schema to extract structured data
-5. **Persistence**: Stores specification in S3 for future use
+5. **Generation of Extraction Specification**: Stores specification in S3 for future use
 
 **Subsequent runs** load the cached schema and execute direct extraction, eliminating AI inference costs for repeated scraping jobs.
 
@@ -126,80 +123,6 @@ The pipeline structure provides natural intervention points. Users can:
 - Validate a sample of Graph CBC results before scaling to full detail extraction
 - Adjust Graph PDP schemas based on initial results
 
-This enables **progressive validation** workflows critical for production data pipelines.
-
-## Implementation: AI-First Infrastructure
-
-### Reusable Specification Generation
-
-V3's core innovation is **AI-generated, code-free extraction logic**. Rather than shipping a traditional scraper with hardcoded selectors, V3 generates extraction specifications on-demand:
-
-```
-First run: AI analyzes site → generates specification → extracts data → persists spec to S3
-Subsequent runs: Load spec from S3 → extract data (no AI inference)
-```
-
-Specifications encode:
-- Element selectors (CSS, XPath, or semantic descriptions)
-- Pagination logic (iteration strategies)
-- Data transformation rules (parsing, normalization)
-- Error handling strategies (fallback patterns)
-
-### Storage Architecture
-
-S3 serves as V3's "learned knowledge base":
-
-```
-s3://v3-extraction-specs/
-├── domain-maps/
-│   └── example.com/map-spec-v1.json
-├── cbc-specs/
-│   └── example.com/category-spec-v2.json
-└── pdp-specs/
-    └── example.com/product-schema-v3.json
-```
-
-Specifications are versioned, allowing V3 to detect site changes and trigger re-analysis when cached patterns fail.
-
-### API-Driven Execution
-
-V3 exposes a RESTful API for pipeline orchestration:
-
-```
-POST /api/v1/map        # Initiate domain crawl
-POST /api/v1/cbc        # Extract listing URLs  
-POST /api/v1/pdp        # Extract structured data
-GET  /api/v1/specs      # List cached specifications
-```
-
-This enables integration into existing data pipelines, scheduled jobs, or interactive dashboards.
-
-## Performance Characteristics
-
-V3's architecture delivers significant efficiency improvements:
-
-| Metric | First Run | Cached Run | Traditional Script |
-|--------|-----------|------------|-------------------|
-| Setup time | ~2-5 min | <10 sec | Hours to days |
-| Token usage | Moderate | Near-zero | N/A |
-| Adaptation cost | Included | Automatic | Full rewrite |
-| Scalability | Linear | Linear | Linear |
-
-The cached execution mode is particularly powerful for recurring scraping jobs—monthly price monitoring, daily inventory checks, or continuous market intelligence.
-
-## Conclusion: Engineering for Accessibility
-
-V3 represents a shift in how we approach web scraping infrastructure. By treating extraction logic as AI-generated artifacts rather than hand-written code, we achieve:
-
-1. **Radical accessibility**: Non-technical users can execute complex scraping workflows through natural language
-2. **Economic efficiency**: First-run analysis cost is amortized across unlimited subsequent executions
-3. **Maintenance reduction**: Site changes trigger automatic re-analysis rather than manual debugging
-4. **Controlled autonomy**: Non-looping architecture prevents runaway costs and ensures predictable behavior
-
-The three-graph pipeline—Map, CBC, PDP—provides the right level of specialization for web scraping's inherent structure, while AI-generated specifications eliminate the traditional code maintenance burden.
+This enables **progressive validation** workflows critical for production data pipelines. The three-graph pipeline—Map, CBC, PDP—provides the right level of specialization for web scraping's inherent structure, while AI-generated specifications eliminate the traditional code maintenance burden.
 
 As data extraction becomes increasingly critical for business intelligence, V3's approach—making scraping as simple as describing what you want—represents a necessary evolution in data engineering tooling.
-
----
-
-*V3 is available for integration via API. Visit [V3 platform] for documentation and access.*
