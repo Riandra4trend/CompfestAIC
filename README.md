@@ -38,10 +38,6 @@ The Map Agent is responsible for understanding the structural layout of a websit
 ### **Output**
    A clean, deduplicated map of all discovered URLs — forming the foundation for the listing and PDP extraction stages.
 
-### **Purpose**
-
-To build an accurate representation of the domain’s navigable structure so the system doesn’t need to infer link patterns again.
-
 ---
 
 ## 2. Listing Agent — Extracting Listing 
