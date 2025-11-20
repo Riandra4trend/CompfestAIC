@@ -58,10 +58,6 @@ The Listing Agent identifies how a site organizes collections of items (catalogs
 3. **Caching Behavior**
    Preserve the process history, such as structural patterns and behavioral findings—so it can serve as historical context for subsequent executions.
 
-### **Cached Behavior**
-
-On subsequent runs against the *same domain*, ScrapeGPT loads the cached specification instead of re-analyzing the structure, reducing both latency and cost.
-
 ### **Output**
 
 A curated list of detail page URLs for downstream structured extraction.
@@ -74,7 +70,7 @@ The PDP Agent extracts user-requested fields from individual detail pages using 
 
 ### **Engineering Approach**
 
-**First-Run (New Domain or New Page Structure)**
+**PDP Agent Process**
 
 1. **Analyze the page layout**
    Purpose: memahami bentuk halaman sehingga sistem tahu bagaimana konten disusun.
@@ -94,6 +90,12 @@ Load the schema and apply extraction directly — no inference or pattern discov
 ### **Output**
 
 A structured dataset containing the requested fields for each detail page.
+
+---
+
+### **Cached Behavior**
+
+On subsequent runs against the *same domain*, ScrapeGPT loads the cached specification instead of re-analyzing the structure, reducing both latency and cost.
 
 ## Why ScrapeGPT Uses Multiple Specialized Agents and directed acyclic graph approach
 
