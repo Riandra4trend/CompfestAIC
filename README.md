@@ -16,12 +16,6 @@ In an era where AI has democratized complex tasks through natural language inter
 
 This architecture allows users to execute comprehensive scraping workflows—traditionally requiring hundreds of lines of custom code—using simple prompts like "extract all product details from example.com."
 
-## How ScrapeGPT Works
-
-Here you go — **clean Markdown**, ready to copy-paste:
-
----
-
 # How ScrapeGPT Works
 
 ScrapeGPT is built around a **directed acyclic graph (DAG)** pipeline, where each agent operates as a deterministic stage with clear inputs and outputs.
@@ -105,9 +99,19 @@ Load the schema and apply extraction directly — no inference or pattern discov
 
 A structured dataset containing the requested fields for each detail page.
 
-## Engineering Decisions: Why Non-Looping Agent Architecture?
+## Why ScrapeGPT Uses Multiple Specialized Agents and directed acyclic graph approach
 
-ScrapeGPT deliberately employs a **linear, non-looping agent architecture** instead of autonomous loop-based systems. This design choice reflects several key engineering principles:
+When we first started designing ScrapeGPT, our initial idea was to use a **single autonomous agent** that could do everything: explore the domain, find the listings, open each detail page, and extract the data. The idea was simple, just to give an AI a URL and let it figure everything out on its own—clicking, scrolling, and deciding where to go next, just like a human would.
+
+While a fully autonomous loop sounds great on paper, in practice, it was **slow, expensive, and unreliable**. The agent would often get "distracted," spending too much time processing irrelevant pages, getting stuck in navigation loops, or hallucinating the site structure. It was slow, costly, and hard to debug.
+
+After several rounds of prototyping, testing with real client websites, and a lot of trial and error, we learned a few things:
+
+* Looping agents are good at reasoning, but **bad at staying focused**.
+* Different parts of a scraping workflow require **very different skill sets**.
+* Most client use cases don’t need a “fully autonomous explorer.” They just need **reliable extraction** that works in seconds.
+
+As these insights became clearer, it was evident that relying on a single looping agent was fundamentally limiting. What we needed wasn’t more autonomy, but **more structure**. This led us to redesign ScrapeGPT around a coordinated set of specialized agents connected through a **directed acyclic graph (DAG)**. Instead of one agent trying to manage every decision in real time, each stage now has a precise role, clear boundaries, and deterministic execution. This shift transforms scraping from an open-ended exploratory loop into a predictable, reliable pipeline. The advantages of this architecture become especially clear in the areas below:
 
 ### 1. Deterministic Behavior and Failure Isolation
 
