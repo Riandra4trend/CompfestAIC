@@ -68,25 +68,18 @@ The PDP Agent extracts user-requested fields from individual detail pages using 
 
 ### **Engineering Approach**
 
-1. **Analyze the page layout**
-   Purpose: memahami bentuk halaman sehingga sistem tahu bagaimana konten disusun.
+1. **Page Layout Analysis**
+   Understand how page content is arranged.
 
-2. **Identify each requested field**
-   Purpose: menentukan lokasi pasti dari data yang diminta pengguna (misal: judul, harga, deskripsi).
-
-3. **Generate field selectors or extraction logic**
-   Purpose: membuat aturan teknis yang memungkinkan data diambil secara konsisten di seluruh halaman yang serupa.
+2. **Field Identification**
+   Locate each requested field (e.g., title, price, description).
    
-4. **Caching Behavior**
+3. **Caching Behavior**
    Preserve the process history, such as structural patterns and behavioral findings—so it can serve as historical context for subsequent executions.
-
-**Subsequent Runs**
-Load the schema and apply extraction directly — no inference or pattern discovery required.
 
 ### **Output**
 
 A structured dataset containing the requested fields for each detail page.
-
 
 ### **Cached Behavior**
 
@@ -106,50 +99,67 @@ After several rounds of prototyping, testing with real client websites, and a lo
 * Different parts of a scraping workflow require **very different skill sets**.
 * Most client use cases don’t need a “fully autonomous explorer.” They just need **reliable extraction** that works in seconds.
 
-As these insights became clearer, it was evident that relying on a single looping agent was fundamentally limiting. What we needed wasn’t more autonomy, but **more structure**. This led us to redesign ScrapeGPT around a coordinated set of specialized agents connected through a **directed acyclic graph (DAG)**. Instead of one agent trying to manage every decision in real time, each stage now has a precise role, clear boundaries, and deterministic execution. This shift transforms scraping from an open-ended exploratory loop into a predictable, reliable pipeline. The advantages of this architecture become especially clear in the areas below:
+As these insights became clearer, it was evident that relying on a single looping agent was fundamentally limiting. What we needed wasn’t more autonomy, but **more structure**. This led us to redesign ScrapeGPT around a coordinated set of specialized agents connected through a **directed acyclic graph (DAG)**. Instead of one agent trying to manage every decision in real time, each stage now has a precise role, clear boundaries, and deterministic execution. This shift transforms scraping from an open-ended exploratory loop into a predictable, reliable pipeline. The advantages of this architecture become especially clear in the areas below.
+---
+## 1. Deterministic Behavior & Failure Isolation
 
-### 1. Deterministic Behavior and Failure Isolation
+Loop-based agents often fall into unpredictable states such as infinite loops, oscillation, or cascading failures.
 
-Loop-based agents can enter unpredictable states when encountering edge cases—infinite loops consuming tokens, oscillation between states, or cascading errors. ScrapeGPT's pipeline architecture ensures:
+The DAG pipeline ensures:
 
-- **Bounded execution time**: Each stage has clear termination conditions
-- **Predictable costs**: Token usage scales linearly with input size, not agent decision complexity
-- **Fault isolation**: Failures in one stage don't corrupt others; users can resume from the last successful stage
+* **Bounded execution time** — each stage has defined termination
+* **Predictable costs** — tokens scale with input size, not agent drift
+* **Fault isolation** — failures in one stage don’t corrupt others
 
-### 2. Specialized Optimization
+---
 
-Each graph is optimized for its specific task domain:
+## 2. Specialized Optimization
 
-- **Map Agent** uses efficient crawling algorithms (BFS with deduplication) rather than asking an agent to "decide" how to explore
-- **Listing Agent** focuses exclusively on pagination and listing patterns, avoiding conflation with detail extraction logic
-- **PDP Agent** specializes in field-level extraction without needing to understand site navigation
+Each agent is optimized for a specific responsibility:
 
-This specialization allows each component to be independently optimized, tested, and monitored.
+* **Map Agent**
+  Efficient crawling (BFS + deduplication) without reasoning about extraction
+* **Listing Agent**
+  Pagination and listing detection without dealing with field-level details
+* **PDP Agent**
+  Precise field extraction without thinking about navigation
 
-### 3. Task-Aligned Decision Making
+This specialization leads to better accuracy and performance across the board.
 
-Web scraping workflows follow predictable patterns: explore → collect listings → extract details. By encoding this structure into the pipeline, V3 avoids forcing agents to rediscover this logic through trial and error.
+---
 
-The system provides **guided autonomy**: agents make intelligent decisions within their domain (e.g., how to handle pagination) but don't need to reason about cross-domain concerns (e.g., whether a URL is a listing or detail page—the pipeline structure makes this explicit).
+## 3. Task-Aligned Decision Making
 
-### 4. Reusability and Caching Strategy
+Scraping workflows follow a predictable structure:
+**explore → collect listings → extract details**.
 
-The linear architecture enables aggressive caching. Each stage produces **portable artifacts**:
+The DAG encodes this sequence directly. Agents make intelligent decisions *within their scope* without needing to guess what stage they’re in.
 
-- Map Agent: Domain URL inventory
-- Listing Agent: Listing extraction specification + URL collection  
-- PDP Agent: Field extraction schema + structured data
+This avoids unnecessary trial-and-error and reduces hallucinations.
 
-These artifacts are versioned and stored in S3, creating a growing library of extraction patterns. When a user targets a previously-scraped site, V3 can skip AI inference entirely, delivering results at near-zero marginal cost.
+---
 
-Loop-based agents typically can't leverage this pattern because their execution path depends on runtime decisions rather than predetermined stages.
+## 4. Reusability & Caching
 
-### 5. Human-in-the-Loop Compatibility
+The linear architecture enables powerful caching strategies. Each stage produces **portable artifacts**:
 
-The pipeline structure provides natural intervention points. Users can:
+* Map Agent → domain URL map
+* Listing Agent → listing specification + URL list
+* PDP Agent → extraction schema + structured data
 
-- Review Graph Map output before proceeding to listing extraction
-- Validate a sample of Graph Listing results before scaling to full detail extraction
-- Adjust Graph PDP schemas based on initial results
+These are versioned and stored (e.g., in S3), allowing ScrapeGPT to reuse learned patterns across runs.
+For previously scraped domains, extraction can occur with **zero additional AI inference**.
+
+---
+
+## 5. Human-in-the-Loop Friendly
+
+The DAG introduces natural validation checkpoints:
+
+* Inspect the Map results
+* Validate Listing extraction samples
+* Adjust PDP schemas before full-scale extraction
+
+This supports progressive QA workflows essential for production data pipelines.
 
 This enables **progressive validation** workflows critical for production data pipelines. The three Agent Map Agent, Listing Agent, PDP Agent provides the right level of specialization for web scraping's inherent structure, while AI-generated specifications eliminate the traditional code maintenance burden.
