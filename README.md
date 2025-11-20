@@ -1,6 +1,12 @@
+<div style="text-align: center; margin-top: 50px;">
+
 # V3: Intelligent Web Scraping Through Specialized AI Agents
 
-## The Data Accessibility Challenge in the AI Era
+<p style="font-size: 1.5em; color: #555; margin-top: 10px;">
+The Data Accessibility Challenge in the AI Era
+</p>
+
+</div>
 
 Data has become the fundamental resource driving modern business decisions, often described as "the new oil" of the digital economy. However, a critical gap exists between recognizing data's value and actually extracting it. Traditional web scraping presents significant engineering challenges: developers typically spend days or weeks crafting custom scripts for each target website, managing DOM variations, handling pagination logic, and maintaining brittle selectors that break with minor UI changes.
 
