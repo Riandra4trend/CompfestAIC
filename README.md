@@ -87,11 +87,12 @@ Load the schema and apply extraction directly — no inference or pattern discov
 
 A structured dataset containing the requested fields for each detail page.
 
----
 
 ### **Cached Behavior**
 
 On subsequent runs against the *same domain*, ScrapeGPT loads the cached specification instead of re-analyzing the structure, reducing both latency and cost.
+
+---
 
 ## Why ScrapeGPT Uses Multiple Specialized Agents and directed acyclic graph approach
 
