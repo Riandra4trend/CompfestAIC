@@ -58,7 +58,7 @@ The Listing Agent identifies how a site organizes collections of items (catalogs
 
 ### **Output**
 
-A curated list of detail page URLs for downstream structured extraction.
+All listing data and their corresponding URLs from the page.
 
 ---
 
