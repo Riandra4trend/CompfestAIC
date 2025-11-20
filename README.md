@@ -1,4 +1,4 @@
-# Introducing V3  
+# Introducing ScrapeGPT 
 
 ## Intelligent Web Scraping Through Specialized AI Agents
 
@@ -8,80 +8,110 @@ The proliferation of diverse website architectures compounds this problem. E-com
 
 In an era where AI has democratized complex tasks through natural language interfaces, data extraction remains frustratingly technical. Business analysts who can articulate exactly what data they need still require engineering resources to build and maintain scrapers. This bottleneck prevents organizations from rapidly responding to market intelligence opportunities.
 
-**V3 addresses this fundamental accessibility problem.** It's an agentic scraping system that enables end-to-end data extraction through natural language prompting—from domain-level exploration to detailed product information extraction. V3 comprises three specialized AI agents, each optimized for a distinct phase of the scraping pipeline:
+**ScrapeGPT addresses this fundamental accessibility problem.** It's an agentic scraping system that enables end-to-end data extraction through natural language prompting—from domain-level exploration to detailed product information extraction. V3 comprises three specialized AI agents, each optimized for a distinct phase of the scraping pipeline:
 
-- **Graph Map**: Domain crawling and link discovery
-- **Graph CBC** (Category/Browse/Collection): Listing page URL extraction
-- **Graph PDP** (Product Detail Page): Structured data extraction from detail pages
+- **Map Agent**: Domain crawling and link discovery
+- **Listing Agent** (Category/Browse/Collection): Listing page URL extraction
+- **PDP Agent** (Product Detail Page): Structured data extraction from detail pages
 
 This architecture allows users to execute comprehensive scraping workflows—traditionally requiring hundreds of lines of custom code—using simple prompts like "extract all product details from example.com."
 
-## How A Three-Stage Pipeline Works
+## How ScrapeGPT Works
 
-V3 employs a **directed acyclic graph (DAG) architecture** rather than a looping agent system. Each graph operates as a specialized stage in a deterministic pipeline, with clear inputs, outputs, and handoff points.
+Here you go — **clean Markdown**, ready to copy-paste:
 
-### Stage 1: Graph Map - Intelligent Domain Crawling
+---
 
-Graph Map performs breadth-first traversal of a target domain to discover relevant URLs while respecting domain boundaries and filtering non-content resources.
+# How ScrapeGPT Works
 
-**Technical Process:**
+ScrapeGPT is built around a **directed acyclic graph (DAG)** pipeline, where each agent operates as a deterministic stage with clear inputs and outputs.
+The goal is straightforward: **map the domain**, **identify listing structures**, and **extract structured data**—without relying on guesswork or non-deterministic agent loops.
 
-1. **Seed initialization**: Accept root URL (e.g., `https://example.com`)
-2. **BFS traversal**: Visit pages systematically within the same domain
-3. **Per-page processing**:
-   - Extract all `<a href>` elements from HTML
-   - Normalize to absolute URLs
-   - Filter by domain (reject external links)
-   - Exclude binary assets (images, PDFs, JS bundles)
-   - Remove `/internal` and `/external` routes
-   - Deduplicate and store valid URLs
-4. **Progress streaming**: Real-time status updates ("collected X URLs")
-5. **Termination**: Stop at configurable limit (e.g., 200 URLs)
-6. **Output**: Complete URL collection with crawl metadata
+---
 
-This approach provides comprehensive domain coverage without manual sitemap analysis or guesswork about URL structures.
+## 1. Map Agent — Domain Mapping & URL Discovery
 
-### Stage 2: Graph CBC - Listing Page Extraction
+The Map Agent is responsible for understanding the structural layout of a website. It performs controlled crawling to map URLs within a domain.
 
-Graph CBC targets intermediate pages that aggregate content—category pages, search results, collection views—extracting links to individual detail pages.
+### **Engineering Approach**
 
-**Adaptive Extraction Process:**
+1. **Seed Initialization**
+   Begin with a root URL (e.g., `https://example.com`).
 
-On first execution against a new site, Graph CBC performs environmental analysis:
+2. **BFS Traversal & Per-Page Processing**
+   Apply a breadth-first traversal to explore the domain evenly and avoid over-crawling any deep branch. Each fetched page is then lightly processed to keep only useful navigable links while filtering out anything irrelevant or redundant.
 
-- **Website Environment Analysis**: The system conducts a comprehensive evaluation of the target website to understand its rendering behavior, data-loading mechanisms, and overall content structure. This includes identifying whether the site serves static content, dynamically rendered elements, or API-driven data, ensuring that all relevant information can be reliably captured.
-- **Field Localization**: The AI agent analyzes the page’s structural components—such as the DOM hierarchy, repeated patterns, and layout organization—to accurately identify and localize each required data field. This step establishes a precise mapping between the requested attributes and their corresponding elements on the webpage.
-- **Generation of Extraction Specification**: During its initial execution on a new domain, the CBC Graph generates a reusable extraction specification. This structured specification describes the site’s listing schema, rendering logic, pagination or navigation patterns, and link selectors. The resulting specification is then persisted to S3 storage, enabling consistent, efficient, and deterministic scraping in subsequent runs without repeating the full environmental analysis.
+### **Output**
+   A clean, deduplicated map of all discovered URLs — forming the foundation for the listing and PDP extraction stages.
 
-**Subsequent executions** bypass the analysis phase entirely, applying the cached specification directly. This dramatically reduces both latency and token consumption, as the AI agent isn't invoked for pattern discovery.
+### **Purpose**
 
-Users can control extraction depth through configurable parameters: page limits, result counts, or scroll iterations.
+To build an accurate representation of the domain’s navigable structure so the system doesn’t need to infer link patterns again.
 
-**Output**: Curated collection of detail page URLs ready for structured extraction.
+---
 
-### Stage 3: Graph PDP - Structured Data Extraction
+## 2. Listing Agent — Extracting Listing 
 
-Graph PDP extracts specific data fields from detail pages based on user-defined schemas. Users provide both target URLs (typically from Graph CBC output) and desired fields (e.g., "title, price, description, specifications").
+Within a domain, pages often share similar listing structures, but these behaviors differ significantly across websites.
+The Listing Agent identifies how a site organizes collections of items (catalogs, categories, search results, etc.).
 
-**First-run workflow**:
+### **Engineering Approach**
 
-1. **Field localization**: AI agent analyzes page structure to locate each requested field
-2. **Extraction strategy generation**: Creates field-specific selectors or extraction logic
-3. **Schema generation**: Produces a reusable extraction specification
-4. **Data extraction**: Applies the schema to extract structured data
-5. **Generation of Extraction Specification**: Stores specification in S3 for future use
+**Listing Agent Process**
 
-**Subsequent runs** load the cached schema and execute direct extraction, eliminating AI inference costs for repeated scraping jobs.
+1. **Environment Observation**
+   Determine the behaviour of the website, like how the site renders content.
 
-This pattern enables **efficient batch processing**: extract once from a sample, then scale to thousands of similar pages using the generated schema.
+2. **Pattern Localization**
+   Detect repeated blocks (cards, rows, grids) that represent item listings.
+
+3. **Caching Behavior**
+   Preserve the process history, such as structural patterns and behavioral findings—so it can serve as historical context for subsequent executions.
+
+### **Cached Behavior**
+
+On subsequent runs against the *same domain*, ScrapeGPT loads the cached specification instead of re-analyzing the structure, reducing both latency and cost.
+
+### **Output**
+
+A curated list of detail page URLs for downstream structured extraction.
+
+---
+
+## 3. PDP Agent — Detail Data Extraction
+
+The PDP Agent extracts user-requested fields from individual detail pages using schemas that are generated once and reused.
+
+### **Engineering Approach**
+
+**First-Run (New Domain or New Page Structure)**
+
+1. **Analyze the page layout**
+   Purpose: memahami bentuk halaman sehingga sistem tahu bagaimana konten disusun.
+
+2. **Identify each requested field**
+   Purpose: menentukan lokasi pasti dari data yang diminta pengguna (misal: judul, harga, deskripsi).
+
+3. **Generate field selectors or extraction logic**
+   Purpose: membuat aturan teknis yang memungkinkan data diambil secara konsisten di seluruh halaman yang serupa.
+   
+4. **Caching Behavior**
+   Preserve the process history, such as structural patterns and behavioral findings—so it can serve as historical context for subsequent executions.
+
+**Subsequent Runs**
+Load the schema and apply extraction directly — no inference or pattern discovery required.
+
+### **Output**
+
+A structured dataset containing the requested fields for each detail page.
 
 ## Engineering Decisions: Why Non-Looping Agent Architecture?
 
-V3 deliberately employs a **linear, non-looping agent architecture** instead of autonomous loop-based systems. This design choice reflects several key engineering principles:
+ScrapeGPT deliberately employs a **linear, non-looping agent architecture** instead of autonomous loop-based systems. This design choice reflects several key engineering principles:
 
 ### 1. Deterministic Behavior and Failure Isolation
 
-Loop-based agents can enter unpredictable states when encountering edge cases—infinite loops consuming tokens, oscillation between states, or cascading errors. V3's pipeline architecture ensures:
+Loop-based agents can enter unpredictable states when encountering edge cases—infinite loops consuming tokens, oscillation between states, or cascading errors. ScrapeGPT's pipeline architecture ensures:
 
 - **Bounded execution time**: Each stage has clear termination conditions
 - **Predictable costs**: Token usage scales linearly with input size, not agent decision complexity
