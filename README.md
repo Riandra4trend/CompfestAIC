@@ -125,9 +125,9 @@ Loop-based agents can enter unpredictable states when encountering edge cases—
 
 Each graph is optimized for its specific task domain:
 
-- **Graph Map** uses efficient crawling algorithms (BFS with deduplication) rather than asking an agent to "decide" how to explore
-- **Graph CBC** focuses exclusively on pagination and listing patterns, avoiding conflation with detail extraction logic
-- **Graph PDP** specializes in field-level extraction without needing to understand site navigation
+- **Map Agent** uses efficient crawling algorithms (BFS with deduplication) rather than asking an agent to "decide" how to explore
+- **Listing Agent** focuses exclusively on pagination and listing patterns, avoiding conflation with detail extraction logic
+- **PDP Agent** specializes in field-level extraction without needing to understand site navigation
 
 This specialization allows each component to be independently optimized, tested, and monitored.
 
@@ -141,9 +141,9 @@ The system provides **guided autonomy**: agents make intelligent decisions withi
 
 The linear architecture enables aggressive caching. Each stage produces **portable artifacts**:
 
-- Graph Map: Domain URL inventory
-- Graph CBC: Listing extraction specification + URL collection  
-- Graph PDP: Field extraction schema + structured data
+- Map Agent: Domain URL inventory
+- Listing Agent: Listing extraction specification + URL collection  
+- PDP Agent: Field extraction schema + structured data
 
 These artifacts are versioned and stored in S3, creating a growing library of extraction patterns. When a user targets a previously-scraped site, V3 can skip AI inference entirely, delivering results at near-zero marginal cost.
 
@@ -154,9 +154,7 @@ Loop-based agents typically can't leverage this pattern because their execution 
 The pipeline structure provides natural intervention points. Users can:
 
 - Review Graph Map output before proceeding to listing extraction
-- Validate a sample of Graph CBC results before scaling to full detail extraction
+- Validate a sample of Graph Listing results before scaling to full detail extraction
 - Adjust Graph PDP schemas based on initial results
 
-This enables **progressive validation** workflows critical for production data pipelines. The three-graph pipeline—Map, CBC, PDP—provides the right level of specialization for web scraping's inherent structure, while AI-generated specifications eliminate the traditional code maintenance burden.
-
-As data extraction becomes increasingly critical for business intelligence, V3's approach—making scraping as simple as describing what you want—represents a necessary evolution in data engineering tooling.
+This enables **progressive validation** workflows critical for production data pipelines. The three Agent Map Agent, Listing Agent, PDP Agent provides the right level of specialization for web scraping's inherent structure, while AI-generated specifications eliminate the traditional code maintenance burden.
