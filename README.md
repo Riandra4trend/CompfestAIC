@@ -47,8 +47,6 @@ The Listing Agent identifies how a site organizes collections of items (catalogs
 
 ### **Engineering Approach**
 
-**Listing Agent Process**
-
 1. **Environment Observation**
    Determine the behaviour of the website, like how the site renders content.
 
@@ -69,8 +67,6 @@ A curated list of detail page URLs for downstream structured extraction.
 The PDP Agent extracts user-requested fields from individual detail pages using schemas that are generated once and reused.
 
 ### **Engineering Approach**
-
-**PDP Agent Process**
 
 1. **Analyze the page layout**
    Purpose: memahami bentuk halaman sehingga sistem tahu bagaimana konten disusun.
