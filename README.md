@@ -164,61 +164,40 @@ For websites that have been scraped before, ScrapeGPT can run the extraction wit
 
 ## 5. Human-in-the-Loop Friendly
 
-The DAG introduces natural validation checkpoints that make ScrapeGPT easy to supervise and adjust at every stage. This ensures accuracy, avoids unnecessary crawling, and gives you full control over what data gets extracted.
-
-### **Inspect the Map Agent results**  
-After providing a domain, the Map Agent generates a full URL map of the site.  
-You can inspect this map to decide:
-
-- Are there subdomains or sections that are irrelevant?  
-- Do you want to process *all* discovered URLs, or only specific parts of the domain?  
-- Should certain sections be excluded (e.g., `/blog`, `/support`, `/auth`, or promo pages)?
-
-By reviewing the map first, you remove unnecessary pages early—saving time, cost, and avoiding unwanted data.
+The DAG naturally creates validation checkpoints, making ScrapeGPT easy to supervise and adjust at every stage. This improves accuracy, prevents unnecessary crawling, and ensures you stay in full control of the extraction process.
 
 ---
 
-### **Validate Listing Agent extraction samples**  
-Before scraping every listing page, ScrapeGPT shows a sample of how it detected item listings.
+### **Map Agent — Review the domain map early**
+After the domain is analyzed, the Map Agent produces a complete URL map.  
+At this step, you can decide:
 
-This allows you to easily:
+- Which sections of the site should be included or excluded  
+- Whether to crawl the entire domain or focus only on specific areas  
+- Whether certain subdomains or paths should be filtered out
 
-- Confirm the Listing Agent is capturing the correct blocks or cards  
-- Make sure titles, thumbnails, prices, or metadata are detected correctly  
-- Verify that pagination, infinite scroll, or load-more behaviors were understood properly  
-- Catch mistakes early (e.g., wrong containers or missing items)
-
-You’re able to validate the structure *before* large-scale extraction begins—making the process safer and more predictable.
+Validating the map first eliminates irrelevant pages upfront—reducing cost and processing time before going to scrape all the listings in every url.
 
 ---
 
-### **Adjust PDP Agent field extraction before full-scale extraction**  
-On the first run, the PDP Agent shows a preview of extracted fields from a sample detail page.  
-You can then refine the schema simply by prompting.
+### **Listing Agent — Confirm listing structure**
+Before collecting data from all listing pages, ScrapeGPT provides a preview of how it identified listing elements.  
+This lets you:
 
-**Example:**  
-You scrape a property listing website and the sample output includes:
+- Verify that the agent is detecting the correct listing blocks  
+- Ensure titles, images, prices, and metadata are correctly recognized  
+- Confirm that pagination or dynamic-loading behavior is interpreted properly  
+- Catch structural mistakes before extraction begins
 
-- Name  
-- Price  
-- Location  
-- Bedroom  
-- Bathroom  
-- MLS ID  
-- Coordinates  
+This checkpoint ensures the listing logic is correct before running at scale and allows you to filter listing URLs before scraping the detail pages.
 
-If you **don’t need** the `MLS ID`, you can simply prompt:
+---
 
-> “Remove `MLS ID` from the extraction schema.”
+### **PDP Agent — Fine-tune extraction fields**
+On the first run of a detail page, the PDP Agent generates a preview of the extracted fields.
+You can adjust this data by specifying which fields to keep, remove, or add directly through prompts—before the extraction process runs at scale.
 
-Or if you realize the page contains a field you *do* need—but the first run didn’t include it, you can add it:
-
-> “Please also extract the `lot size` field if available.”  
-> “Add the `agent name` and `agency phone number` from the JSON in the script tag.”
-
-Within seconds, the schema updates without touching any code.
-
-This flexibility allows you to finalize exactly which fields you want **before executing the full extraction** across hundreds or thousands of pages.
+This lets you refine the data model—without modifying code—before the system extracts thousands of records.
 
 ---
 
