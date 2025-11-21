@@ -12,9 +12,9 @@ In an era where AI has democratized complex tasks through natural language inter
 
 - **Map Agent**: Domain crawling and link discovery
 - **Listing Agent** (Category/Browse/Collection): All listing data and their corresponding URLs from the page.
-- **PDP Agent** (Product Detail Page): Structured data extraction from detail pages
+- **General Agent** (Data Extraction): Extracts structured data from any targeted page (listing pages or product/detail pages) based on user-requested fields.
 
-This architecture allows users to execute comprehensive scraping workflows—traditionally requiring hundreds of lines of custom code—using simple prompts like "extract all product details from example.com."
+This architecture allows users to execute comprehensive scraping workflows—traditionally requiring hundreds of lines of custom code—using simple prompts like "extract all listing from example.com."
 
 # How ScrapeGPT Works
 
@@ -25,18 +25,18 @@ The goal is straightforward: **map the domain**, **identify listing structures**
 
 ## 1. Map Agent — Domain Mapping & URL Discovery
 
-The Map Agent is responsible for understanding the structural layout of a website. It performs controlled crawling to map URLs within a domain.
+The Map Agent is responsible for understanding the structural layout of a website at scale. It performs controlled crawling to discover all relevant subdomains, listing-page URLs, and detail-page URLs that serve as the foundation for downstream extraction.
 
 ### **Engineering Approach**
 
 1. **Seed Initialization**
-   Begin with a root URL (e.g., `https://example.com`).
+   Start from a root URL (e.g., https://example.com) and automatically detect additional subdomains or related entry points that belong to the same domain space.
 
 2. **BFS Traversal & Per-Page Processing**
    Apply a breadth-first traversal to explore the domain evenly and avoid over-crawling any deep branch. Each fetched page is then lightly processed to keep only useful navigable links while filtering out anything irrelevant or redundant.
 
 ### **Output**
-   A clean, deduplicated map of all discovered URLs — forming the foundation for the listing and PDP extraction stages.
+   A clean, deduplicated map of all discovered subdomains, all listing pages, and all URLs that directly or potentially lead to detail/product pages.
 
 ---
 
@@ -70,25 +70,21 @@ All listing data on the page, along with their corresponding detail-page URLs—
 
 ---
 
-## 3. PDP Agent — Detail Data Extraction
+## 3. General Agent — Data Extraction for Any Targeted Page
 
-The PDP Agent extracts user-requested fields from individual detail pages using schemas that are generated once and reused.
+The General Agent extracts user-requested fields from any targeted page, whether it is a listing page or a detailed product page. Extraction is performed based entirely on the user’s prompt, allowing flexible and precise data retrieval for any page structure.
 
 ### **Engineering Approach**
 
 1. **Page Layout Analysis**  
-   Understand how page content is arranged, including visible UI elements and underlying structural components.
+   Analyze how the page is structured, including visible UI elements and the underlying DOM, to understand how content is presented on both listing and detail pages.
 
 2. **Field Identification**  
-   Locate each requested field (e.g., title, price, description) based solely on the user’s prompt.  
-   The agent can extract not only fields shown in the user interface, but also **hidden data embedded in `<script>` tags, JSON blobs, metadata, or other non-visible HTML structures**—ensuring that all relevant information is captured even if it never appears directly on the page.
-
-3. **Caching Behavior**  
-   Preserve the process history, such as structural patterns and behavioral findings, so it can serve as historical context for subsequent executions.
+   Identify and extract every field requested by the user—whether it comes from a product detail section, a listing card, or other structured/unstructured content. The agent can also retrieve non-visible data such as values stored in <script> tags, embedded JSON, metadata, or hidden HTML attributes—ensuring complete coverage even when information does not appear directly on screen.
 
 ### **Output**
 
-A structured dataset containing the requested fields for each detail page.
+A structured dataset containing all user-requested fields extracted from the targeted page—whether that page represents a listing, a collection of items, or a detailed product view.
 
 ### **Cached Behavior**
 
@@ -125,80 +121,96 @@ The DAG pipeline ensures:
 
 ## 2. Specialized Optimization
 
-Each agent is optimized for a specific responsibility:
+Each agent is optimized for a focused responsibility:
 
-* **Map Agent**
-  Efficient crawling (BFS + deduplication) without reasoning about extraction
-* **Listing Agent**
-  Pagination and listing detection without dealing with field-level details
-* **PDP Agent**
-  Precise field extraction without thinking about navigation
+- **Map Agent**  
+  Efficient domain crawling (BFS + deduplication), discovering all subdomains and URL patterns without performing extraction.
 
-This specialization leads to better accuracy and performance across the board.
+- **Listing Agent**  
+  Detects listing structures, pagination behavior, dynamic-loading patterns, and collects all listing URLs—without reasoning about fields.
+
+- **General Agent**  
+  Extracts any user-requested fields from any targeted page (listing or detail), without dealing with navigation or crawling.
+
+This separation yields stronger accuracy, less confusion between tasks, and faster performance across the entire pipeline.
 
 ---
 
 ## 3. Task-Aligned Decision Making
 
-Scraping workflows follow a predictable structure:
+Scraping workflows follow a predictable sequence:  
 **explore → collect listings → extract details**.
 
-The DAG encodes this sequence directly. Agents make intelligent decisions *within their scope* without needing to guess what stage they’re in.
-
-This avoids unnecessary trial-and-error and reduces hallucinations.
+The DAG encodes this sequence directly. Each agent makes intelligent decisions only *within its scope*—removing guesswork and reducing hallucinations that usually occur in multi-step autonomous systems.
 
 ---
 
 ## 4. Reusability & Caching
 
-The linear architecture enables powerful caching strategies. Each stage produces **reusable outputs** that ScrapeGPT can load again on future runs for the same domain:
+The linear pipeline enables powerful caching. Each stage produces **reusable outputs** that can be loaded instantly on future runs for the same domain:
 
-* **Map Agent →** a complete map of all discovered URLs  
-* **Listing Agent →** the detected listing structure + the list of item URLs  
-* **PDP Agent →** the extraction schema + the structured data results  
+- **Map Agent →** complete URL map (subdomains, listing pages, detail pages)  
+- **Listing Agent →** detected listing patterns + list of item URLs  
+- **General Agent →** extraction schema + structured results  
 
-These outputs are versioned and stored, allowing ScrapeGPT to reuse everything it has already learned about a domain.  
-For websites that have been scraped before, ScrapeGPT can run the extraction with **zero additional AI inference**, making it much faster and more cost-efficient.
+These artifacts are versioned and stored, enabling ScrapeGPT to reuse domain knowledge and skip unnecessary inference.  
+For previously scraped domains, extraction can run with **zero added AI cost**, making the system dramatically faster and cheaper over time.
 
 ---
 
 ## 5. Human-in-the-Loop Friendly
 
-The DAG naturally creates validation checkpoints, making ScrapeGPT easy to supervise and adjust at every stage. This improves accuracy, prevents unnecessary crawling, and ensures you stay in full control of the extraction process.
+The DAG introduces validation checkpoints that make ScrapeGPT easy to supervise and tune at every stage—ensuring accuracy, eliminating wasteful crawling, and giving you full control of the pipeline.
 
 ---
 
-### **Map Agent — Review the domain map early**
-After the domain is analyzed, the Map Agent produces a complete URL map.  
-At this step, you can decide:
+### **Map Agent — Review and Filter the Domain Map Early**
 
-- Which sections of the site should be included or excluded  
-- Whether to crawl the entire domain or focus only on specific areas  
-- Whether certain subdomains or paths should be filtered out
+Once the domain is crawled, the Map Agent outputs a complete map of discovered URLs, including subdomains, listing pages, and potential detail pages.
 
-Validating the map first eliminates irrelevant pages upfront—reducing cost and processing time before going to scrape all the listings in every url.
+At this step, the user can:
 
----
+- Filter which URLs should or should not be processed  
+- Include or exclude paths, patterns, or subdomains  
+- Narrow the crawl to specific URL structures (e.g., `/product/`, `/shop/`, `/listing/`)  
+- Remove pages that contain irrelevant content  
 
-### **Listing Agent — Confirm listing structure**
-Before collecting data from all listing pages, ScrapeGPT provides a preview of how it identified listing elements.  
-This lets you:
+This is particularly useful because some URLs may contain both listings and detail-product links.  
+User-side filtering lets you shape **exactly which URLs move forward** to Listing Agent or directly to General Agent.
 
-- Verify that the agent is detecting the correct listing blocks  
-- Ensure titles, images, prices, and metadata are correctly recognized  
-- Confirm that pagination or dynamic-loading behavior is interpreted properly  
-- Catch structural mistakes before extraction begins
-
-This checkpoint ensures the listing logic is correct before running at scale and allows you to filter listing URLs before scraping the detail pages.
+Early validation ensures only relevant URLs move to the next stages—reducing cost, time, and noise.
 
 ---
 
-### **PDP Agent — Fine-tune extraction fields**
-On the first run of a detail page, the PDP Agent generates a preview of the extracted fields.
-You can adjust this data by specifying which fields to keep, remove, or add directly through prompts—before the extraction process runs at scale.
+### **Listing Agent — Confirm Listing Structure**
 
-This lets you refine the data model—without modifying code—before the system extracts thousands of records.
+Before scraping all listing pages, ScrapeGPT provides an accurate preview of how listing elements were detected.
+
+You can verify:
+
+- Whether listing blocks were correctly identified  
+- Titles, prices, images, labels, and metadata  
+- Pagination, infinite scroll, or load-more behavior  
+- Whether the listing URLs are the correct ones to process at scale  
+
+This ensures the listing logic is correct before batching thousands of pages, and allows you to refine which listing URLs should be forwarded to the next stage.
 
 ---
 
-By enabling inspection, sampling, and easy schema adjustments, ScrapeGPT supports **progressive validation**—a workflow that mirrors how production-grade data pipelines are normally monitored. The Map Agent, Listing Agent, and PDP Agent each provide just the right specialization, while AI-generated specifications eliminate the traditional burden of maintaining custom scraper code.
+### **General Agent — Fine-tune Extraction Fields**
+
+On the first run of any targeted page, the General Agent generates a preview of extracted fields.
+
+You can then prompt to:
+
+- Add new fields  
+- Remove unnecessary fields  
+- Rename fields  
+- Correct extraction logic  
+- Request hidden data (e.g., JSON, metadata, script content)
+
+This refinement step ensures your extraction schema is perfect before scaling to thousands of pages—without writing or editing any code.
+
+---
+
+By enabling inspection, sampling, and easy schema adjustments, ScrapeGPT supports **progressive validation**—a workflow that mirrors how production-grade data pipelines are normally monitored. The Map Agent, Listing Agent, and General Agent each provide just the right specialization, while AI-generated specifications eliminate the traditional burden of maintaining custom scraper code.
