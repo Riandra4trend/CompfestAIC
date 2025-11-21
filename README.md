@@ -211,6 +211,22 @@ You can then prompt to:
 
 This refinement step ensures your extraction schema is perfect before scaling to thousands of pages—without writing or editing any code.
 
+## How ScrapeGPT Compares to Other Web Scraping Platforms
+
+While several modern AI scraping tools have emerged, ScrapeGPT differentiates itself through specialized agents, deterministic pipelines, and human-in-the-loop checkpoints. Here's a quick comparison of ScrapeGPT against other popular tools:
+
+| Feature / Metric                  | ScrapeGPT                                      | FireCrawl (firecrawl.dev)                  | Exa.ai (exa.ai)                            | BrowserBase (browserbase.com)             |
+|----------------------------------|-----------------------------------------------|-------------------------------------------|-------------------------------------------|-------------------------------------------|
+| **Architecture**                  | DAG-based, 3 specialized agents              | Single-loop autonomous crawling           | AI-powered scraping with agent assistance | Browser automation + AI                   |
+| **Data Extraction Control**       | Human-in-the-loop checkpoints for validation | Mostly autonomous, limited fine-tuning    | Mix of prompts and AI extraction          | Script-driven, less natural language friendly |
+| **Dynamic Content Handling**       | SPA, lazy-loading, infinite scroll, load-more| Some SPA support, mainly static pages     | Handles dynamic content via AI prompts    | Needs manual scripting for SPA            |
+| **Field Flexibility**             | Fully promptable fields, hidden data support | Predefined extraction, limited flexibility| Configurable via prompts                  | Script-defined, limited dynamic fields    |
+| **Caching / Reusability**         | Reusable pipeline artifacts, zero added AI cost | Minimal caching                            | Partial caching                             | No caching by default                      |
+| **Latency / Speed**               | Optimized per stage, deterministic            | Slower on large domains, loop prone       | Medium                                    | Medium to slow                             |
+| **Ease of Use**                    | Natural language prompts, minimal coding      | Some coding required                       | Prompt-based                               | Coding-heavy                               |
+| **Progressive Validation**        | Preview & confirm each stage                  | Limited stage validation                   | Partial validation                          | No built-in validation                      |
+| **Best Use Case**                  | Enterprise-grade scraping with reliability   | Quick crawls, exploratory scraping        | AI-assisted flexible extraction            | Scriptable scraping & automation           |
+
 ---
 
 By enabling inspection, sampling, and easy schema adjustments, ScrapeGPT supports **progressive validation**—a workflow that mirrors how production-grade data pipelines are normally monitored. The Map Agent, Listing Agent, and General Agent each provide just the right specialization, while AI-generated specifications eliminate the traditional burden of maintaining custom scraper code.
