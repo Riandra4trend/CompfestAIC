@@ -220,7 +220,7 @@ While several modern AI scraping tools have emerged, ScrapeGPT differentiates it
 | Platform      | Core Features | Scraping Capabilities | Crawl / Map | Listing Extraction & Navigation | Speed / Feature | Map Scraping | Listings Scraping | Detail Scraping |
 |---------------|---------------|------------------------|-------------|----------------------------------|----------------|------------------------|-------------------|-------------|
 | **ScrapeGPT** | General Scrape, Map Scrape, Listing Agent, History Cache | ✔️ Structured scraping for detail & listing pages | ✔️ Full map scrape | ✔️ Specialized Listing Agent (extract URLs + data, automated navigation) |  | ✔️ (up to 1 minutes) | ✔️ (up to 3 minutes) | ✔️ (up to 1.5 minutes) |
-| **Firecrawl** | General Scrape, Map Scrape, Crawl, Search-like Query | ❗ Broad extraction; returns almost everything | ✔️ | ❌ No structured listing extractor |  | ✔️ (up to 1.5 minutes) | ✔️ (up to 2 minutes) | ✔️ (up to 0.5 minutes) |
+| **Firecrawl** | General Scrape, Map Scrape, Crawl, Search-like Query | ❗ Broad extraction; returns almost everything | ✔️ | ❌ No structured listing extractor |  | ✔️ (up to 0.5 minutes) | ✔️ (up to 2 minutes) | ✔️ (up to 1.5 minutes) |
 | **Exa.ai** | Search-like Query | ❌ Not a scraper | ❌ | ❌ | | Reliable as search tool | Excellent for search & discovery | Cannot scrape pages |
 | **Browserbase** | Single Page Scrape, Auto Code Generation | ✔️ Single-page scraping | ❌ | ❌ Minimal navigation support |  | ❌ | ❌ (Failed on CAPTCHA) | ✔️ (up to 4 minutes) |
 
