@@ -10,17 +10,17 @@ In an era where AI has democratized complex tasks through natural language inter
 
 **ScrapeGPT addresses this fundamental accessibility problem.** It's an agentic scraping system that enables end-to-end data extraction through natural language prompting—from domain-level exploration to detailed product information extraction. ScrapeGPT consists of three specialized AI agents, each optimized for a distinct phase of the scraping pipeline:
 
-- **Map Agent**: Domain crawling and link discovery
-- **Listing Agent** (Category/Browse/Collection): All listing data and their corresponding URLs from the page.
+- **Map Agent**: Domain crawling and link discovery  
+- **Listing Agent** (Category/Browse/Collection): All listing data and their corresponding URLs from the page.  
 - **General Agent** (Data Extraction): Extracts structured data from any targeted page (listing pages or product/detail pages) based on user-requested fields.
 
 This architecture allows users to execute comprehensive scraping workflows—traditionally requiring hundreds of lines of custom code—using simple prompts like "extract all listing from example.com."
 
 # How ScrapeGPT Works
 
-![Alt text](https://raw.githubusercontent.com/Riandra4trend/CompfestAIC/main/Flow%201%262.gif)
+![Flow GIF](https://raw.githubusercontent.com/Riandra4trend/CompfestAIC/main/Flow%201%262.gif?raw=true)
 
-ScrapeGPT is built around a **directed acyclic graph (DAG)** pipeline, where each agent operates as a deterministic stage with clear inputs and outputs.
+ScrapeGPT is built around a **directed acyclic graph (DAG)** pipeline, where each agent operates as a deterministic stage with clear inputs and outputs.  
 The goal is straightforward: **map the domain**, **identify listing structures**, and **extract structured data**—without relying on guesswork or non-deterministic agent loops.
 
 ---
