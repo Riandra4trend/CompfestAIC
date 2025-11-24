@@ -19,8 +19,9 @@ This architecture allows users to execute comprehensive scraping workflows—tra
 # How ScrapeGPT Works
 
 ![Flow GIF](https://raw.githubusercontent.com/Riandra4trend/CompfestAIC/main/Flow%201%262.gif?raw=true)
-ScrapeGPT is built around a **directed acyclic graph (DAG)** pipeline, where each agent operates as a deterministic stage with clear inputs and outputs.  
-The goal is straightforward: **map the domain**, **identify listing structures**, and **extract structured data**—without relying on guesswork or non-deterministic agent loops. With the available agents, you can build a complete end-to-end scraping system. As illustrated in the flow above, ScrapeGPT supports two deterministic data paths: (1) starting from a seed domain using the Map Agent and General Agent to discover and extract listing or product URLs; and (2) starting from a listing page URL using the Listing Agent and General Agent to iterate through listing items and extract detailed product data.
+ScrapeGPT is built around a **directed acyclic graph (DAG)** pipeline, where each agent operates as a deterministic stage with clear inputs and outputs. The goal is straightforward: **map the domain**, **identify listing structures**, and **extract structured data**—without relying on guesswork or non-deterministic agent loops. 
+
+With the available agents, you can build a complete end-to-end scraping system. As illustrated in the flow above, ScrapeGPT supports two deterministic data paths: (1) starting from a seed domain using the Map Agent and General Agent to discover and extract listing or product URLs; and (2) starting from a listing page URL using the Listing Agent and General Agent to iterate through listing items and extract detailed product data.
 
 ---
 
