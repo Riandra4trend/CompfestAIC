@@ -17,7 +17,7 @@ In an era where AI has democratized complex tasks through natural language inter
 This architecture allows users to execute comprehensive scraping workflows—traditionally requiring hundreds of lines of custom code—using simple prompts like "extract all listing from example.com."
 
 # How ScrapeGPT Works
-
+![Flow GIF](https://raw.githubusercontent.com/Riandra4trend/CompfestAIC/main/Flow%201%262.gif)
 ScrapeGPT is built around a **directed acyclic graph (DAG)** pipeline, where each agent operates as a deterministic stage with clear inputs and outputs.
 The goal is straightforward: **map the domain**, **identify listing structures**, and **extract structured data**—without relying on guesswork or non-deterministic agent loops.
 
