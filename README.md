@@ -217,92 +217,14 @@ This refinement step ensures your extraction schema is perfect before scaling to
 
 While several modern AI scraping tools have emerged, ScrapeGPT differentiates itself through specialized agents, deterministic pipelines, and human-in-the-loop checkpoints. Here's a quick comparison of ScrapeGPT against other popular tools on Website www.Zillow.com:
 
-<table>
-  <tr>
-    <td style="vertical-align:top; width:50%">
+dalam markdown bisa ga ya tabel dibawah ini dipisah menjadi 2 pembatasnya speed/feature tetapi pengennya sebelahan gamau atas bawah:
 
-      <!-- LEFT TABLE -->
-      <table>
-        <tr>
-          <th>Platform</th>
-          <th>Core Features</th>
-          <th>Scraping Capabilities</th>
-          <th>Crawl / Map</th>
-          <th>Listing Extraction & Navigation</th>
-        </tr>
-        <tr>
-          <td><b>ScrapeGPT</b></td>
-          <td>General Scrape, Map Scrape, Listing Agent, History Cache</td>
-          <td>✔️ Structured scraping</td>
-          <td>✔️</td>
-          <td>✔️ Specialized Listing Agent</td>
-        </tr>
-        <tr>
-          <td><b>Firecrawl</b></td>
-          <td>General Scrape, Map Scrape, Crawl, Search-like Query</td>
-          <td>❗ Broad extraction</td>
-          <td>✔️</td>
-          <td>❌ No structured listing extractor</td>
-        </tr>
-        <tr>
-          <td><b>Exa.ai</b></td>
-          <td>Search-like Query</td>
-          <td>❌ Not a scraper</td>
-          <td>❌</td>
-          <td>❌</td>
-        </tr>
-        <tr>
-          <td><b>Browserbase</b></td>
-          <td>Single Page Scrape, Auto Code Generation</td>
-          <td>✔️ Single-page scraping</td>
-          <td>❌</td>
-          <td>❌ Minimal navigation support</td>
-        </tr>
-      </table>
-
-    </td>
-
-    <td style="vertical-align:top; width:50%">
-
-      <!-- RIGHT TABLE -->
-      <table>
-        <tr>
-          <th>Speed / Feature</th>
-          <th>Map Scraping</th>
-          <th>Listings Scraping</th>
-          <th>Detail Scraping</th>
-        </tr>
-        <tr>
-          <td></td>
-          <td>✔️ (1 min)</td>
-          <td>✔️ (3 min)</td>
-          <td>✔️ (1.5 min)</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>✔️ (0.5 min)</td>
-          <td>✔️ (2 min)</td>
-          <td>✔️ (1.5 min)</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>❌</td>
-          <td>❌</td>
-          <td>❌</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>❌</td>
-          <td>❌</td>
-          <td>✔️ (4 min)</td>
-        </tr>
-      </table>
-
-    </td>
-  </tr>
-</table>
-
-
+| Platform      | Core Features | Scraping Capabilities | Crawl / Map | Listing Extraction & Navigation | Speed / Feature | Map Scraping | Listings Scraping | Detail Scraping |
+|---------------|---------------|------------------------|-------------|----------------------------------|----------------|------------------------|-------------------|-------------|
+| **ScrapeGPT** | General Scrape, Map Scrape, Listing Agent, History Cache | ✔️ Structured scraping for detail & listing pages | ✔️ Full map scrape | ✔️ Specialized Listing Agent (extract URLs + data, automated navigation) |  | ✔️ (up to 1 minutes) | ✔️ (up to 3 minutes) | ✔️ (up to 1.5 minutes) |
+| **Firecrawl** | General Scrape, Map Scrape, Crawl, Search-like Query | ❗ Broad extraction; returns almost everything | ✔️ | ❌ No structured listing extractor |  | ✔️ (up to 0.5 minutes) | ✔️ (up to 2 minutes) | ✔️ (up to 1.5 minutes) |
+| **Exa.ai** | Search-like Query | ❌ Not a scraper | ❌ | ❌ | | ❌ | ❌ | ❌ |
+| **Browserbase** | Single Page Scrape, Auto Code Generation | ✔️ Single-page scraping | ❌ | ❌ Minimal navigation support |  | ❌ | ❌ (Failed on CAPTCHA) | ✔️ (up to 4 minutes) |
 
 ---
 ScrapeGPT provides a more complete and purpose-built scraping solution compared to other platforms, particularly when the goal is to extract structured data at scale. Its multi-agent architecture, comprising a Map Agent, Listing Agent, and General Agent—allows it to handle end-to-end workflows that traditionally require complex custom code. Unlike Firecrawl, which focuses on broad and generalized extraction, ScrapeGPT emphasizes precision, deterministic outputs, and repeatability, supported by history caching for cost-efficient re-runs on the same domain. Meanwhile, Exa.ai and Browserbase serve narrower use cases, Exa.ai specializes in search rather than scraping, while Browserbase offers page-level automation but struggles with speed and stability. Overall, ScrapeGPT sits in a strong position for users needing accurate, structured, and scalable web data extraction.
