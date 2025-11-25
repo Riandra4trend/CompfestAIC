@@ -219,6 +219,13 @@ While several modern AI scraping tools have emerged, Mrscraper Agent further dis
 | **Exa.ai**     | Search-like Query                                        | ❌                         | ❌                         | ❌                         | ❌ | Low |
 | **Browserbase**| Single Page Scrape, Auto Code Generation                 | ❌                         | ❌ (Failed on CAPTCHA)     | ✔️        | ❌ | High |
 
+| Platform       | Core Features                                            | Map Scraping | Listings Scraping | Detail Scraping | Adaptive Navigation System | Precision |
+|:--------------:|:---------------------------------------------------------:|:------------:|:------------------:|:----------------:|:---------------------------:|:-------:|
+| **Mrscraper**  | General Scrape, Map Scrape, Listing Agent, History Cache | ✔️        | ✔️        | ✔️      | ✔️ | High | 
+| **Firecrawl**  | General Scrape, Map Scrape, Crawl, Search-like Query     | ✔️      | ✔️        | ✔️      | ❌ | Medium |
+| **Exa.ai**     | Search-like Query                                        | ❌                         | ❌                         | ❌                         | ❌ | Low |
+| **Browserbase**| Single Page Scrape, Auto Code Generation                 | ❌                         | ❌ (Failed on CAPTCHA)     | ✔️        | ❌ | High |
+
 ---
 Mrscraper Agent provides a more complete and purpose-built scraping solution compared to alternative platforms, especially when the objective is to extract structured data at scale. Its multi-agent architecture—consisting of a Map Agent, Listing Agent, and General Agent, enables it to manage end-to-end workflows that would normally require complex custom automation. Unlike Firecrawl, which aims for broad and generalized extraction, Mrscraper Agent emphasizes precision, determinism, and repeatability, supported by history caching for cost-efficient re-runs within the same domain. Meanwhile, Exa.ai and Browserbase serve narrower use cases, Exa.ai is focused on search-style queries, and Browserbase offers page-level automation but struggles with stability and speed. Overall, Mrscraper Agent stands out as the strongest option for users needing accurate, structured, and scalable web data extraction.
 
