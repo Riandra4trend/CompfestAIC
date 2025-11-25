@@ -221,8 +221,8 @@ A major differentiator is how ScrapeGPT processes raw HTML. While tools like Fir
 
 While several modern AI scraping tools have emerged, ScrapeGPT further distinguishes itself through specialized agents, deterministic pipelines, and human-in-the-loop checkpoints. Here's a quick comparison of ScrapeGPT against other popular tools on website www.Zillow.com :
 
-| Platform       | Core Features                                            | Map Scraping              | Listings Scraping         | Detail Scraping           | Adaptive Navigation System | Precise             |
-|----------------|-----------------------------------------------------------|----------------------------|----------------------------|----------------------------|-----------------------------|------------------------|
+| Platform       | Core Features                                            | Map Scraping | Listings Scraping | Detail Scraping | Adaptive Navigation System | Precise |
+|:--------------:|:---------------------------------------------------------:|:------------:|:------------------:|:----------------:|:---------------------------:|:-------:|
 | **ScrapeGPT**  | General Scrape, Map Scrape, Listing Agent, History Cache | ✔️        | ✔️        | ✔️      | ✔️ | High | 
 | **Firecrawl**  | General Scrape, Map Scrape, Crawl, Search-like Query     | ✔️      | ✔️        | ✔️      | ❌ | Medium |
 | **Exa.ai**     | Search-like Query                                        | ❌                         | ❌                         | ❌                         | ❌ | Low |
