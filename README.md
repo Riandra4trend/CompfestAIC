@@ -1,14 +1,10 @@
-# Introducing ScrapeGPT 
-
-## Intelligent Web Scraping Through Specialized AI Agents
-
 Data has become the fundamental resource driving modern business decisions, often described as "the new oil" of the digital economy. However, a critical gap exists between recognizing data's value and actually extracting it. Traditional web scraping presents significant engineering challenges: developers typically spend days or weeks crafting custom scripts for each target website, managing DOM variations, handling pagination logic, and maintaining brittle selectors that break with minor UI changes.
 
 The proliferation of diverse website architectures compounds this problem. E-commerce platforms alone exhibit thousands of structural variations—from server-side rendered marketplaces to React-based SPAs with infinite scroll, from traditional pagination to load-more patterns. Each requires a fundamentally different extraction approach.
 
 In an era where AI has democratized complex tasks through natural language interfaces, data extraction remains frustratingly technical. Business analysts who can articulate exactly what data they need still require engineering resources to build and maintain scrapers. This bottleneck prevents organizations from rapidly responding to market intelligence opportunities.
 
-**ScrapeGPT addresses this fundamental accessibility problem.** It's an agentic scraping system that enables end-to-end data extraction through natural language prompting—from domain-level exploration to detailed product information extraction. ScrapeGPT consists of three specialized AI agents, each optimized for a distinct phase of the scraping pipeline:
+**Mrscraper Agent addresses this fundamental accessibility problem.** It's an agentic scraping system that enables end-to-end data extraction through natural language prompting—from domain-level exploration to detailed product information extraction. Mrscraper Agent's consists of three specialized AI agents, each optimized for a distinct phase of the scraping pipeline:
 
 - **Map Agent**: Domain crawling and link discovery  
 - **Listing Agent** (Category/Browse/Collection): All listing data and their corresponding URLs from the page.  
@@ -16,12 +12,12 @@ In an era where AI has democratized complex tasks through natural language inter
 
 This architecture allows users to execute comprehensive scraping workflows—traditionally requiring hundreds of lines of custom code—using simple prompts like "extract all listing from example.com."
 
-# How ScrapeGPT Works
-
+---
+# How Mrscraper Agent Works
 ![Flow GIF](https://raw.githubusercontent.com/Riandra4trend/CompfestAIC/main/Flow%201%262.gif?raw=true)
-ScrapeGPT is built around a **directed acyclic graph (DAG)** pipeline, where each agent operates as a deterministic stage with clear inputs and outputs. The goal is straightforward: **map the domain**, **identify listing structures**, and **extract structured data**—without relying on guesswork or non-deterministic agent loops. 
+Mrscraper Agent is built around a **directed acyclic graph (DAG)** pipeline, where each agent operates as a deterministic stage with clear inputs and outputs. The goal is straightforward: **map the domain**, **identify listing structures**, and **extract structured data**—without relying on guesswork or non-deterministic agent loops. 
 
-With the available agents, you can build a complete end-to-end scraping system. As illustrated in the flow above, ScrapeGPT supports two deterministic data paths: (1) starting from a seed domain using the Map Agent and General Agent to discover and extract listing or product URLs; and (2) starting from a listing page URL using the Listing Agent and General Agent to iterate through listing items and extract detailed product data.
+With the available agents, you can build a complete end-to-end scraping system. As illustrated in the flow above, Mrscraper Agent supports two deterministic data paths: (1) starting from a seed domain using the Map Agent and General Agent to discover and extract listing or product URLs; and (2) starting from a listing page URL using the Listing Agent and General Agent to iterate through listing items and extract detailed product data.
 
 ---
 
@@ -82,7 +78,7 @@ The General Agent extracts user-requested fields from any targeted page, whether
    Analyze how the page is structured, including visible UI elements and the underlying DOM, to understand how content is presented on both listing and detail pages.
 
 2. **Field Identification**  
-   Identify and extract every field requested by the user—whether it comes from a product detail section, a listing card, or other structured/unstructured content. The agent can also retrieve non-visible data such as values stored in <script> tags, embedded JSON, metadata, or hidden HTML attributes—ensuring complete coverage even when information does not appear directly on screen.
+   Identify and extract every field requested by the user—whether it comes from a product detail section, a listing card, or other structured/unstructured content. The agent can also retrieve non-visible data such as values stored in "script" tags, embedded JSON, metadata, or hidden HTML attributes—ensuring complete coverage even when information does not appear directly on screen.
 
 ### **Output**
 
@@ -90,13 +86,13 @@ A structured dataset containing all user-requested fields extracted from the tar
 
 ### **Cached Behavior**
 
-On subsequent runs against the *same domain*, ScrapeGPT loads the cached specification instead of re-analyzing the structure, reducing both latency and cost.
+On subsequent runs against the *same domain*, Mrscraper Agent loads the cached specification instead of re-analyzing the structure, reducing both latency and cost.
 
 ---
 
-## Why ScrapeGPT Uses Multiple Specialized Agents and directed acyclic graph approach
+## Why Mrscraper Agent Uses Multiple Specialized Agents and directed acyclic graph approach
 
-When we first started designing ScrapeGPT, our initial idea was to use a **single autonomous agent** that could do everything: explore the domain, find the listings, open each detail page, and extract the data. The idea was simple, just to give an AI a URL and let it figure everything out on its own—clicking, scrolling, and deciding where to go next, just like a human would.
+When we first started designing Mrscraper Agent, our initial idea was to use a **single autonomous agent** that could do everything: explore the domain, find the listings, open each detail page, and extract the data. The idea was simple, just to give an AI a URL and let it figure everything out on its own—clicking, scrolling, and deciding where to go next, just like a human would.
 
 While a fully autonomous loop sounds great on paper, in practice, it was **slow, expensive, and unreliable**. The agent would often get "distracted," spending too much time processing irrelevant pages, getting stuck in navigation loops, or hallucinating the site structure. It was slow, costly, and hard to debug.
 
@@ -106,7 +102,7 @@ After several rounds of prototyping, testing with real client websites, and a lo
 * Different parts of a scraping workflow require **very different skill sets**.
 * Most client use cases don’t need a “fully autonomous explorer.” They just need **reliable extraction** that works in seconds.
 
-As these insights became clearer, it was evident that relying on a single looping agent was fundamentally limiting. What we needed wasn’t more autonomy, but **more structure**. This led us to redesign ScrapeGPT around a coordinated set of specialized agents connected through a **directed acyclic graph (DAG)**. Instead of one agent trying to manage every decision in real time, each stage now has a precise role, clear boundaries, and deterministic execution. This shift transforms scraping from an open-ended exploratory loop into a predictable, reliable pipeline. The advantages of this architecture become especially clear in the areas below.
+As these insights became clearer, it was evident that relying on a single looping agent was fundamentally limiting. What we needed wasn’t more autonomy, but **more structure**. This led us to redesign Mrscraper Agent around a coordinated set of specialized agents connected through a **directed acyclic graph (DAG)**. Instead of one agent trying to manage every decision in real time, each stage now has a precise role, clear boundaries, and deterministic execution. This shift transforms scraping from an open-ended exploratory loop into a predictable, reliable pipeline. The advantages of this architecture become especially clear in the areas below.
 
 ---
 ## 1. Deterministic Behavior & Failure Isolation
@@ -155,16 +151,14 @@ The linear pipeline enables powerful caching. Each stage produces **reusable out
 - **Listing Agent →** detected listing patterns + list of item URLs  
 - **General Agent →** extraction schema + structured results  
 
-These artifacts are versioned and stored, enabling ScrapeGPT to reuse domain knowledge and skip unnecessary inference.  
+These artifacts are versioned and stored, enabling Mrscraper Agent to reuse domain knowledge and skip unnecessary inference.  
 For previously scraped domains, extraction can run with **zero added AI cost**, making the system dramatically faster and cheaper over time.
 
 ---
 
 ## 5. Human-in-the-Loop Friendly
 
-The DAG introduces validation checkpoints that make ScrapeGPT easy to supervise and tune at every stage—ensuring accuracy, eliminating wasteful crawling, and giving you full control of the pipeline.
-
----
+The DAG introduces validation checkpoints that make Mrscraper Agent easy to supervise and tune at every stage—ensuring accuracy, eliminating wasteful crawling, and giving you full control of the pipeline.
 
 ### **Map Agent — Review and Filter the Domain Map Early**
 
@@ -182,11 +176,9 @@ User-side filtering lets you shape **exactly which URLs move forward** to Listin
 
 Early validation ensures only relevant URLs move to the next stages—reducing cost, time, and noise.
 
----
-
 ### **Listing Agent — Confirm Listing Structure**
 
-Before scraping all listing pages, ScrapeGPT provides an accurate preview of how listing elements were detected.
+Before scraping all listing pages, Mrscraper Agent provides an accurate preview of how listing elements were detected.
 
 You can verify:
 
@@ -196,8 +188,6 @@ You can verify:
 - Whether the listing URLs are the correct ones to process at scale  
 
 This ensures the listing logic is correct before batching thousands of pages, and allows you to refine which listing URLs should be forwarded to the next stage.
-
----
 
 ### **General Agent — Fine-tune Extraction Fields**
 
@@ -213,22 +203,23 @@ You can then prompt to:
 
 This refinement step ensures your extraction schema is perfect before scaling to thousands of pages—without writing or editing any code.
 
-## How ScrapeGPT Compares to Other Web Scraping Platforms
+---
+## How Mrscraper Agent Compares to Other Web Scraping Platforms
 
-Modern AI-driven scraping platforms vary widely in their architectural assumptions, navigation capabilities, and output quality. Some tools prioritize raw speed, while others focus on extraction accuracy or search-oriented use cases. ScrapeGPT, however, is designed specifically for large-scale structured data extraction, combining deterministic agents with adaptive browser-level interaction and reusable domain history to produce consistent and reliable outputs.
+Modern AI-driven scraping platforms vary widely in their architectural assumptions, navigation capabilities, and output quality. Some tools prioritize raw speed, while others focus on extraction accuracy or search-oriented use cases. Mrscraper Agent, however, is designed specifically for large-scale structured data extraction, combining deterministic agents with adaptive browser-level interaction and reusable domain history to produce consistent and reliable outputs.
 
-A major differentiator is how ScrapeGPT processes raw HTML. While tools like Firecrawl often return low-level scraped content—such as raw HTML or minimally parsed text—ScrapeGPT applies a specialized extraction pipeline that converts each page into clean, structured, and high-fidelity datasets, eliminating the need for extensive post-processing.
+A major differentiator is how Mrscraper Agent processes raw HTML. While tools like Firecrawl often return low-level scraped content—such as raw HTML or minimally parsed text, Mrscraper Agent applies a specialized extraction pipeline that converts each page into clean, structured, and high-fidelity datasets, eliminating the need for extensive post-processing.
 
-While several modern AI scraping tools have emerged, ScrapeGPT further distinguishes itself through specialized agents, deterministic pipelines, and human-in-the-loop checkpoints. Here's a quick comparison of ScrapeGPT against other popular tools on website www.Zillow.com :
+While several modern AI scraping tools have emerged, Mrscraper Agent further distinguishes itself through specialized agents, deterministic pipelines, and human-in-the-loop checkpoints. Here's a quick comparison of Mrscraper Agent against other popular tools on website www.Zillow.com :
 
 | Platform       | Core Features                                            | Map Scraping | Listings Scraping | Detail Scraping | Adaptive Navigation System | Precision |
 |:--------------:|:---------------------------------------------------------:|:------------:|:------------------:|:----------------:|:---------------------------:|:-------:|
-| **ScrapeGPT**  | General Scrape, Map Scrape, Listing Agent, History Cache | ✔️        | ✔️        | ✔️      | ✔️ | High | 
+| **Mrscraper**  | General Scrape, Map Scrape, Listing Agent, History Cache | ✔️        | ✔️        | ✔️      | ✔️ | High | 
 | **Firecrawl**  | General Scrape, Map Scrape, Crawl, Search-like Query     | ✔️      | ✔️        | ✔️      | ❌ | Medium |
 | **Exa.ai**     | Search-like Query                                        | ❌                         | ❌                         | ❌                         | ❌ | Low |
 | **Browserbase**| Single Page Scrape, Auto Code Generation                 | ❌                         | ❌ (Failed on CAPTCHA)     | ✔️        | ❌ | High |
 
 ---
-ScrapeGPT provides a more complete and purpose-built scraping solution compared to alternative platforms, especially when the objective is to extract structured data at scale. Its multi-agent architecture—consisting of a Map Agent, Listing Agent, and General Agent, enables it to manage end-to-end workflows that would normally require complex custom automation. Unlike Firecrawl, which aims for broad and generalized extraction, ScrapeGPT emphasizes precision, determinism, and repeatability, supported by history caching for cost-efficient re-runs within the same domain. Meanwhile, Exa.ai and Browserbase serve narrower use cases, Exa.ai is focused on search-style queries, and Browserbase offers page-level automation but struggles with stability and speed. Overall, ScrapeGPT stands out as the strongest option for users needing accurate, structured, and scalable web data extraction.
+Mrscraper Agent provides a more complete and purpose-built scraping solution compared to alternative platforms, especially when the objective is to extract structured data at scale. Its multi-agent architecture—consisting of a Map Agent, Listing Agent, and General Agent, enables it to manage end-to-end workflows that would normally require complex custom automation. Unlike Firecrawl, which aims for broad and generalized extraction, Mrscraper Agent emphasizes precision, determinism, and repeatability, supported by history caching for cost-efficient re-runs within the same domain. Meanwhile, Exa.ai and Browserbase serve narrower use cases, Exa.ai is focused on search-style queries, and Browserbase offers page-level automation but struggles with stability and speed. Overall, Mrscraper Agent stands out as the strongest option for users needing accurate, structured, and scalable web data extraction.
 
-By enabling inspection, sampling, and easy schema adjustments, ScrapeGPT supports **progressive validation**—a workflow that mirrors how production-grade data pipelines are normally monitored. The Map Agent, Listing Agent, and General Agent each provide just the right specialization, while AI-generated specifications eliminate the traditional burden of maintaining custom scraper code.
+By enabling inspection, sampling, and easy schema adjustments, Mrscraper Agent supports **progressive validation**—a workflow that mirrors how production-grade data pipelines are normally monitored. The Map Agent, Listing Agent, and General Agent each provide just the right specialization, while AI-generated specifications eliminate the traditional burden of maintaining custom scraper code.
