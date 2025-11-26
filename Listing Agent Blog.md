@@ -2,9 +2,7 @@
 
 ## Executive Summary
 
-Modern websites employ wildly different patterns for displaying lists of items—from traditional pagination to infinite scroll, from static HTML to lazy-loaded React components. A single e-commerce site might use button-based "Load More" on mobile and pagination on desktop, while another implements virtual scrolling with dynamic content injection. This architectural diversity makes building a reliable listing extraction system exceptionally challenging.
-
-**MrScraper's Listing Agent** solves this through adaptive navigation—a system that observes, classifies, and responds to website behaviors in real-time. Instead of hardcoding rules for each pattern, the agent treats every listing page as an unknown environment, systematically exploring its interaction model before extraction begins. This article breaks down the engineering decisions, research insights, and architectural patterns that enable the Listing Agent to handle any listing structure reliably.
+Modern websites use a wide variety of listing patterns—from pagination and load-more buttons to infinite scroll, lazy-loaded components, and hybrid behaviors—making reliable extraction increasingly difficult. MrScraper’s Listing Agent addresses this complexity with adaptive navigation that observes, classifies, and responds to each page’s behavior in real time. Rather than relying on fixed rules, the agent treats every listing as an unknown environment, probing its interaction model before extracting data. This article explores the engineering decisions and architectural principles behind this approach and how it enables consistent, accurate handling of any listing structure.
 
 ---
 
