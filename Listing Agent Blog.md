@@ -190,19 +190,12 @@ The Listing Agent demonstrates that robust listing extraction is not achieved by
 
 Our next focus is pushing navigation-type detection and environment-behavior classification even further.
 
-### 1. Advanced Navigation-Type Detection Engine
+### 1. Smarter Navigation-Type Detection
 
-We are expanding the core detection system to:
+We are improving our core detection engine to identify page navigation patterns more clearly and efficiently.
+This includes enhanced recognition of subtle interaction cues, better interpretation of how pages change over time, and faster, more reliable detection of different navigation modes across diverse websites.
 
-* Incorporate temporal patterns (interaction → mutation timing)
-* Use pattern-matching models based on navigation fingerprints
-* Detect subtle hybrid modes more reliably
-* Validate navigation through multi-path testing
+### 2. Deeper Environment–Behavior Classification
 
-### 2. Deeper Environment-Behavior Classification
-
-The agent will learn to classify a website’s interaction environment more intelligently:
-
-* Distinguishing between real infinite scroll vs. virtual scroll regions
-* Detecting behavior-switching zones (scroll → load-more → pagination)
-* Understanding asynchronous rendering cycles across frameworks (React, Vue, Next.js, etc.)
+We are building a more intelligent behavior-classification system that can understand how a page responds to user actions.
+The goal is to precisely categorize interaction behaviors, detect transitions between different interaction modes, and interpret dynamic rendering patterns—resulting in a faster, more accurate understanding of any website’s environment.
