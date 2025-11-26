@@ -12,7 +12,7 @@ At first glance, extracting listings seems straightforward: find repeated elemen
 
 ### The Diversity Problem
 
-Consider three common e-commerce patterns:
+Consider three common website patterns:
 
 **Pattern 1: Traditional Pagination**
 ```
