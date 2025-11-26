@@ -6,7 +6,7 @@ Modern websites use a wide variety of listing patterns—from pagination and loa
 
 ---
 
-## The Problem Space: Why Listing Extraction Is Harder Than It Looks
+## Why Listing Extraction Is Harder Than It Seems and How Adaptive Systems Overcome It
 
 At first glance, extracting listings seems straightforward: find repeated elements on a page, grab their data, move to the next page. But modern web architecture has made this deceptively complex.
 
