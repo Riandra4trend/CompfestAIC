@@ -113,13 +113,12 @@ To overcome these issues, our agent first expands the page fully by scrolling un
 
 ### **Our Approach**
 
-```
 1. Scroll the page until reaching a stable bottom state or until the agent detects a transition from infinite scroll to a hybrid element (e.g., Load More, Next).
 2. Process and normalize the final HTML structure with our formula.
 3. Identify all interactive elements relevant to navigation.
 4. Analyze their context to determine whether they belong to listing navigation or other UI components.
 5. Evaluate interaction behavior to confirm the actual navigation mechanism, including hybrid patterns.
-```
+
 ---
 ## Handling Edge Cases and Anti-Patterns
 
