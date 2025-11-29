@@ -24,16 +24,27 @@ Our internal dataset of over $[X,000]$ analyzed domains revealed a fractured lan
 
 ## How We Build Listing Agent That Discover Variety of Website Structure  
 
-To solve the discovery problem while keeping the tool friendly for beginners, we had to automate the detection of these patterns. We developed a system centered on **Pagination Type Detection** and **Lazy Fetch Handling**.
-One of our core engineering insights was that analyzing the entire DOM to find navigation cues is computationally expensive and prone to noise. We observed that in the vast majority of listing pages, the primary navigation controls (such as "Next" buttons or "Load More" triggers) reside in the bottom 20% of the rendered HTML body. 
+To solve the discovery problem while keeping the tool accessible to beginners, we needed a way to automatically detect pagination patterns without requiring users to write complex rules. This led us to develop a system centered on **Pagination Type Detection** and **Lazy Fetch Handling**, enabling the crawler to infer navigation behavior directly from a page’s structure.
 
-> *{Placeholder: Percentage data graphic showing how often navigation appears within the bottom 20% of the HTML}*
+One of our core engineering insights was that scanning the entire DOM for navigation cues is both computationally heavy and highly prone to noise. Raw HTML often contains thousands of irrelevant tokens, such as base64-encoded images, heavy SVG paths, analytics scripts, and large CSS blocks. Sending this unfiltered content into a classification model increases latency and cost while decreasing accuracy. Our research further revealed that pagination-related elements almost always appear within the last 20% of the HTML. This pattern allowed us to narrow the search space and significantly improve reliability.
 
-Based on this, we implemented a **"Tail Analysis" strategy**. Instead of feeding the entire raw HTML into our classifier, we run it through a cleaner that strips noise (like scripts and styles) and truncates the body to preserve only the bottom section. This approach allows us to run our detection heuristics on a lightweight fragment, significantly reducing token usage and processing time while eliminating false positives from header navigations.
+*{Placeholder: Percentage data graphic showing how often navigation appears within the bottom 20% of the HTML}*
+
+Building on this insight, we introduced a **Tail Analysis** strategy. Rather than feeding full HTML documents into the classifier, we pass them through a specialized cleaner that removes noise, such as scripts and styles, and truncates the content to retain only the lower part of the body. Working with this lightweight fragment reduces token usage, speeds up processing, and helps avoid false positives from header or sidebar navigation elements.
+
+To support this pipeline, we engineered a custom **HTML Cleaner** designed specifically for listing-style architectures. Unlike generic text extractors, our cleaner is aware of DOM repetition and page semantics. It performs three critical operations before the content reaches the classification engine.
 
 > *{Placeholder: Diagram showing the process: Raw HTML -> HTML Cleaner (Truncates top 80%) -> Tail HTML -> Classification Engine}*
 
+**Noise Elimination** is the first stage in the cleaning process, where the system removes non-structural elements that do not contribute to pagination detection. In this step, tags like `<script>`, `<style>`, `<svg>`, and `<iframe>` are stripped out completely, along with broader semantic regions such as `<header>` and `<aside>` that almost never contain listing navigation. The cleaner also trims unnecessary attributes by removing tracking metadata and shortening base64-encoded URIs so the resulting HTML stays lightweight and fits comfortably within the model’s context window.
+
+The second stage focuses on **Structural Truncation (Smart Collapse)**, which is crucial because listing pages often contain large repeated blocks such as product cards, table rows, or list items. To avoid processing hundreds of near-identical nodes, the cleaner generates an “Element Signature” for each node based on its tag name, class, and attributes. When it detects long runs of identical signatures, such as 50 repeated `div.product-card` elements, it keeps only the first few instances to establish the structure and collapses the rest into a single placeholder. This preserves the layout while drastically reducing size. Why we do this? because We need to see that a list exists, but we don't need to read all items to find the "Next" button or other pagination type. This reduces HTML size by up to 90% while keeping the DOM structure intact.
+
+Finally, the system performs **Tail Analysis**, which targets the part of the page where pagination controls most often appear. Since listing pages typically place navigation elements at the bottom of the rendered body, the cleaner isolates the lower segment of the HTML after all collapsing steps are complete. This Safe Tail Extraction ensures that even extremely large pages are reduced to a concise, focused section containing the elements the classifier cares about, such as page numbers, Next buttons, and Load More triggers.
+
 Detecting the navigation type is only half the battle; the agent must also respect the timing of the web. Many scrapers fail because they try to extract data before the browser has finished "hydrating" the content. To address this, we implemented **Iterative Scrolling** rather than a naive "jump-to-bottom" approach. The agent scrolls in human-like increments, monitoring network idle states and DOM mutations after every movement. If the DOM height increases or new list items appear, the agent recognizes a "Lazy Load" event and pauses extraction until stability is reached. This architecture allows users to easily control the depth of their scrape by simply adding parameters like `max page`, leaving the complex navigation logic entirely to the agent.
+
+> *{Placeholder: If necessary? Diagram showing the process or illustration of how iterative scrolling works}*
 
 ---
 
