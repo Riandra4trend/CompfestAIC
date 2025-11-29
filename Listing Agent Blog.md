@@ -14,9 +14,9 @@ This gap between how people need to use the internet and how the internet is act
 
 However, standardizing the web is deceptively difficult. When we began developing the Listing Agent, we encountered a massive variance in how modern websites structure their data fetching and navigation. A naive scraper expects a static page, but the modern web is a dynamic environment of Single Page Applications (SPAs), hydration states, and obfuscated navigation. To build a truly general-purpose agent, we conducted an analysis of thousands of e-commerce and listing directory websites. Our research found that listing navigation generally converges into three distinct archetypes:
 
-1. Traditional Pagination: The classic "Next" button or page numbers ($1, 2, 3...$).
-2. Infinite Scroll: Content appends automatically as the viewport descends.
-3. Load More: A button explicitly requests the next batch of data to append to the current DOM.
+**1. Traditional Pagination :** The classic "Next" button or page numbers ($1, 2, 3...$).
+**2. Infinite Scroll :** Content appends automatically as the viewport descends.
+**3. Load More :** A button explicitly requests the next batch of data to append to the current DOM.
 
 > *{Placeholder: Bar Graph showing the percentage distribution of Pagination vs. Infinite Scroll vs. Load More / Hybrid based on your dataset} also total dataset*
 
