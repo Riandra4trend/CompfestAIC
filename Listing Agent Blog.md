@@ -37,7 +37,7 @@ Detecting the navigation type is only half the battle; the agent must also respe
 
 ---
 
-## Handling Edge Cases: When Patterns Lie
+## When Patterns Lie
 
 The biggest hurdle in automated scraping is "visual ambiguity"—elements that look like navigation but serve a different purpose. Through our testing, we identified three critical edge cases that required specific engineering solutions to ensure high accuracy.
 
