@@ -28,23 +28,23 @@ To solve the discovery problem while keeping the tool accessible to beginners, w
 
 One of our core engineering insights was that scanning the entire DOM for navigation cues is computationally heavy and highly prone to noise. Raw HTML contains thousands of irrelevant tokens such as analytics scripts, heavy SVG paths, and base64 images. Sending this unfiltered content to a classification model increases latency and decreases accuracy.
 
-To address this, we engineered an in-house HTML Cleaner, specifically designed through our research to truncate and preserve only the structural content that matters. Our cleaner operates through two distinct phases before any classification occurs:
+To address this, we engineered an in-house HTML Cleaner, specifically designed through our research to truncate and preserve only the structural content that matters. The cleaner not only removes unnecessary elements but also applies a truncation threshold, so if the cleaned HTML exceeds a pre-defined character limit, the remaining content is truncated. This approach preserves performance and keeps classification cost predictable. Our cleaner operates through two distinct phases before any classification occurs:
 
 **1. Noise Elimination**, The system strips non-structural elements. Tags like <script>, <style>, <svg>, and <iframe> are removed, along with semantic regions like <header> or <aside> that rarely contain pagination. We also trim attributes, removing tracking metadata and shortening long URIs.
 
 **2. Structural Collapse**, Listing pages are defined by repetition—hundreds of product cards or table rows. We don't need to read every item to know a list exists. Our cleaner generates an "Element Signature" for each node (tag + class + attributes). When it detects long runs of identical signatures (e.g., 50 repeated div.product-card), it collapses them into a single placeholder. This preserves the structure of the list while reducing HTML size by up to 90%.
 
-Once we had a clean structure, we looked for ways to make the process faster, more reliable, and cost-efficient. Our analysis of thousands of domains confirmed a crucial pattern that navigation logic almost always resides in the bottom 20% of the document structure.
+Once we obtained a clean HTML structure, a challenge remained: truncation could unintentionally remove important pagination elements. Through extensive research, we found that most pagination elements naturally appear near the bottom of the HTML document.
 
 {Placeholder: Percentage data graphic showing how often navigation appears within the bottom 20% of the HTML vs the top 80%}
 
-Building on this insight, we introduced a Footer-Focused Context strategy. Instead of feeding the whole cleaned document to the model, we pass the HTML through a specialized funnel that reduces the document to its essential structural components, isolating the specific segment where navigation controls physically render.
+To maintain stability in speed, accuracy, and completeness, we apply a threshold on HTML length while preserving content from the end upward, ensuring that pagination elements are always captured. Our analysis of thousands of websites confirmed a key pattern that navigation logic almost always resides within the bottom portion of the document. Building on this insight, we implement a bottom Focused strategy. Instead of feeding the whole cleaned document to the model, we pass the HTML through a specialized funnel that reduces the document to its essential structural components, isolating the specific segment where navigation controls physically render.
 
 > *{Placeholder: Diagram showing the pipeline: Raw HTML -> Noise Elimination -> Structural Collapse -> Footer-Focused Context -> Classification Engine}*
 
 In this pipeline, the raw HTML is ingested, stripped of noise, structurally collapsed to remove redundancy, and finally truncated to the footer context before entering the Classification Engine. This approach ensures high-precision detection with minimal token usage, enabling significantly faster classification. 
 
-Detecting the navigation type is only half the battle; the agent must also respect the timing of the web. Many scrapers fail because they try to extract data before the browser has finished "hydrating" the content. To address this, we implemented **Iterative Scrolling** rather than a naive "jump-to-bottom" approach. The agent scrolls in human-like increments, monitoring network idle states and DOM mutations after every movement. If the DOM height increases or new list items appear, the agent recognizes a "Lazy Load" event and pauses extraction until stability is reached. This architecture allows users to easily control the depth of their scrape by simply adding parameters like `max page`, leaving the complex navigation logic entirely to the agent.
+Detecting the navigation type is only half the battle; the agent must also respect the timing of the web. Many scrapers fail because they try to extract data before the browser has finished rendering content. To solve this, we implemented Iterative Scrolling, where the agent scrolls down the page periodically, in human-like increments, instead of jumping straight to the bottom. After each scroll, it monitors network activity and DOM changes, if the page loads new items or the DOM height increases, the agent recognizes a "Lazy Load" event and waits until the content stabilizes. This approach not only mimics human browsing behavior but also allows users to control scrape depth with simple parameters like max page, leaving the complex navigation logic entirely to the agent.
 
 > *{Placeholder: If necessary? Diagram showing the process or illustration of how iterative scrolling works}*
 
@@ -68,11 +68,15 @@ The Listing Agent demonstrates that robust listing extraction is not achieved by
 
 ---
 ## Why Our Approach is Superior
-We didn't arrive at this architecture by accident. To build a truly general-purpose agent, we conducted a detailed research and engineering study, analyzing two representative products and comparing their structures against common industry approaches. Through this, we observed critical limitations in existing tools.
 
-1. The "Link-Crawling" Limitation (Other Tools) Many general-purpose scrapers operate by simply crawling every URL found on a page, hoping that following a link will lead to "Page 2." This method is fundamentally flawed because it relies on the existence of a distinct URL. It completely fails to cover the variety of modern structures, such as Infinite Scroll and Load More buttons, where data is fetched dynamically within a single URL context. By assuming navigation is always a link, these tools miss vast amounts of data on Single Page Applications (SPAs).
+We designed this architecture with careful research and engineering to create a truly general-purpose scraping agent. By studying common patterns across thousands of websites, and analyzing many representative ai scraping products and comparing their structures against common industry approaches we focused on building a system that is **reliable, efficient, and adaptable**.
 
-2. The "Vision-First" Bottleneck (Other Tools) Other agents attempt to solve this by screenshotting the page and asking a Vision Language Model (VLM) "Where is the next button?" for every single step. While visually accurate, blindly applying Vision LLMs to every interaction is inefficient. It introduces significant latency and prohibits cost-effective scaling. Our approach—using lightweight structural inference first—is orders of magnitude faster, reserving heavy compute only for the most complex edge cases.
+1. **Robust Pagination Detection**
+   Our agent prioritizes detecting pagination and navigation patterns, making it highly reliable across a wide range of websites—including Single Page Applications (SPAs) and dynamically loaded content. Unlike approaches that depend on simply following URLs to reach the next page, our agent can handle infinite scrolls, "Load More" buttons, and other modern web structures, ensuring that no data is overlooked.
+
+2. **Optimized Time and Cost Efficiency**
+   Our agent minimizes LLM usage by relying primarily on lightweight structural inference to determine the next steps, reserving heavier computation for only the most complex scenarios. This design significantly reduces processing time and cost while maintaining accuracy. By contrast, approaches that invoke Vision LLMs for every interaction may incur higher latency and cost due to overuse of computational resources.
+  
 ---
 
 ## What’s Next: Future Enhancements
