@@ -13,7 +13,9 @@ Good scraping tools don't just extract data; they ensure the complete and precis
 Standardizing the web is deceptively difficult. When developing the Listing Agent, we encountered massive variance in how modern websites structure their data fetching and navigation. A naive scraper expects a static page, but the modern web has dynamic environment of Single Page Applications (SPAs), content rendered progressively, and obfuscated navigation. Many sites use lazy rendering, where only an initial skeleton of content loads and the rest appears gradually, triggered by scrolling, clicking, or other interactions. To handle this, the Listing Agent mimics human behavior with gradual, iterative scrolling, allowing the site’s JavaScript to fetch additional items in real time. This ensures every listing is revealed, improves reliability of content capture, and reduces anti-bot detection by simulating natural scroll patterns with variable speed and pauses. Some pages combine both approaches, serving a few items server-side while hiding dozens more behind lazy loading, making behavior detection crucial for complete data extraction. Our research found that listing navigation generally falls into three distinct archetypes:
 
 **1. Traditional Pagination :** The classic "Next" button or page numbers ($1, 2, 3...$).
+
 **2. Infinite Scroll :** Content appends automatically as the viewport descends.
+
 **3. Load More :** A button explicitly requests the next batch of data to append to the current DOM.
 
 > *{Placeholder: Bar Graph showing the percentage distribution of Pagination vs. Infinite Scroll vs. Load More / Hybrid based on your dataset} also total dataset*
