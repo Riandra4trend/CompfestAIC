@@ -18,15 +18,15 @@ Our internal dataset of over $[X,000]$ analyzed domains shows that the web split
 
 To solve the discovery problem while keeping the tool accessible to beginners, we needed a way to automatically detect pagination patterns without requiring users to write complex rules. This led us to develop a system centered on **Pagination Type Detection** and **Lazy Fetch Handling**, enabling the crawler to infer navigation behavior directly from a page’s structure.
 
-One of our core engineering insights was that scanning the entire DOM for navigation cues is computationally heavy and highly prone to noise. Raw HTML contains thousands of irrelevant tokens—analytics scripts, heavy SVG paths, and base64 images. Sending this unfiltered content to a classification model increases latency and decreases accuracy.
+One of our core engineering insights was that scanning the entire DOM for navigation cues is computationally heavy and highly prone to noise. Raw HTML contains thousands of irrelevant tokens such as analytics scripts, heavy SVG paths, and base64 images. Sending this unfiltered content to a classification model increases latency and decreases accuracy.
 
-That is why we engineered an in-house HTML Cleaner, specifically built based on our research to truncate and preserve only the structural content that matters. Our cleaner operates through two distinct phases before any classification occurs:
+To address this, we engineered an in-house HTML Cleaner, specifically designed through our research to truncate and preserve only the structural content that matters. Our cleaner operates through two distinct phases before any classification occurs:
 
 **1. Noise Elimination**, The system strips non-structural elements. Tags like <script>, <style>, <svg>, and <iframe> are removed, along with semantic regions like <header> or <aside> that rarely contain pagination. We also trim attributes, removing tracking metadata and shortening long URIs.
 
 **2. Structural Collapse**, Listing pages are defined by repetition—hundreds of product cards or table rows. We don't need to read every item to know a list exists. Our cleaner generates an "Element Signature" for each node (tag + class + attributes). When it detects long runs of identical signatures (e.g., 50 repeated div.product-card), it collapses them into a single placeholder. This preserves the structure of the list while reducing HTML size by up to 90%.
 
-Once we had a clean structure, we looked for ways to make the process faster, more reliable, and cost-efficient. Our analysis of thousands of domains confirmed a crucial pattern: navigation logic almost always resides in the bottom 20% of the document structure.
+Once we had a clean structure, we looked for ways to make the process faster, more reliable, and cost-efficient. Our analysis of thousands of domains confirmed a crucial pattern that navigation logic almost always resides in the bottom 20% of the document structure.
 
 {Placeholder: Percentage data graphic showing how often navigation appears within the bottom 20% of the HTML vs the top 80%}
 
@@ -40,7 +40,7 @@ Detecting the navigation type is only half the battle; the agent must also respe
 
 > *{Placeholder: If necessary? Diagram showing the process or illustration of how iterative scrolling works}*
 
-Once the agent successfully identifies the pagination type—whether Next Button, Infinite Scroll, or Load More—it transitions from understanding the structure to acting on it. Because the system already detects lazy-loading triggers through iterative scrolling, it can fully automate the entire navigation sequence: scrolling in controlled increments to surface hidden items, waiting for hydration events, or clicking through paginated URLs as needed. Combined, these capabilities transform the agent from a passive classifier into an autonomous navigator, capable of reliably exploring the full breadth of diverse website structures without requiring the user to script a single rule.  
+Once the agent successfully identifies the pagination type, whether Next Button, Infinite Scroll, or Load More, it transitions from understanding the structure to acting on it. Because the system already detects lazy-loading triggers through iterative scrolling, it can fully automate the entire navigation sequence, scrolling in controlled increments to surface hidden items, waiting for load contents, or clicking through paginated URLs as needed. Combined, these capabilities transform the agent from a passive classifier into an autonomous navigator, capable of reliably exploring the full breadth of diverse website structures without requiring the user to script a single rule.
 
 ---
 
@@ -60,7 +60,7 @@ The Listing Agent demonstrates that robust listing extraction is not achieved by
 
 ---
 ## Why Our Approach is Superior
-We didn't arrive at this architecture by accident. To build a truly general-purpose agent, we executed a rigorous research and engineering phase, comparing our structural inference model against common industry standards. We found that other tools typically fall into two categories, both of which struggle with the modern diversity of web structures.
+We didn't arrive at this architecture by accident. To build a truly general-purpose agent, we conducted a detailed research and engineering study, analyzing two representative products and comparing their structures against common industry approaches. Through this, we observed critical limitations in existing tools.
 
 1. The "Link-Crawling" Limitation (Other Tools) Many general-purpose scrapers operate by simply crawling every URL found on a page, hoping that following a link will lead to "Page 2." This method is fundamentally flawed because it relies on the existence of a distinct URL. It completely fails to cover the variety of modern structures, such as Infinite Scroll and Load More buttons, where data is fetched dynamically within a single URL context. By assuming navigation is always a link, these tools miss vast amounts of data on Single Page Applications (SPAs).
 
