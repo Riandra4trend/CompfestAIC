@@ -50,10 +50,6 @@ Detecting the navigation type is only half the battle; the agent must also respe
 | ![](https://github.com/Riandra4trend/CompfestAIC/blob/main/Lazy%20loa.gif) |
 |:--------------------------------------------------------------------------:|
 
-
-![Lazy Load & Iterative scroll](https://github.com/Riandra4trend/CompfestAIC/blob/main/Lazy%20loa.gif)
-
-
 Once the agent successfully identifies the pagination type, whether Next Button, Infinite Scroll, or Load More, it transitions from understanding the structure to acting on it. Because the system already detects lazy-loading triggers through iterative scrolling, it can fully automate the entire navigation sequence, scrolling in controlled increments to surface hidden items, waiting for load contents, or clicking through paginated URLs as needed. Combined, these capabilities transform the agent from a passive classifier into an autonomous navigator, capable of reliably exploring the full breadth of diverse website structures without requiring the user to script a single rule.
 
 ---
