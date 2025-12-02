@@ -18,7 +18,7 @@ Standardizing the web is deceptively difficult. When developing the Listing Agen
 
 **3. Load More :** A button explicitly requests the next batch of data to append to the current DOM.
 
-> *{Placeholder: Bar Graph showing the percentage distribution of Pagination vs. Infinite Scroll vs. Load More / Hybrid based on your dataset} also total dataset*
+![Pagination Type Grafik](https://github.com/Riandra4trend/CompfestAIC/blob/main/Asset%206.png)
 
 Our internal dataset of over $[1,356]$ analyzed domains shows that the web splits into 3 dominant pagination patterns, **Next-Button Pagination**, **Infinite Scroll**, and **Load-More Button**. This dataset reveals a fractured landscape roughly $[71]%$ of sites still rely on Traditional Pagination, a pattern predominantly found in older architectures or high-SEO sites where distinct page URLs are preferred. Meanwhile, $[17]%$ have shifted to Infinite Scroll, now dominant in social platforms and modern feed-style commerce to maximize engagement. The remaining $[12]%$ utilize Load More buttons, where user intent is required to append data to the current view. This diversity implies that a rigid, rule-based scraper is destined to fail; an effective agent must be fluid and adaptive.
 
