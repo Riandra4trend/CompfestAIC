@@ -45,6 +45,8 @@ In this pipeline, the raw HTML is ingested, stripped of noise, structurally coll
 
 Detecting the navigation type is only half the battle; the agent must also respect the timing of the web. Many scrapers fail because they try to extract data before the browser has finished rendering content. To solve this, we implemented Iterative Scrolling, where the agent scrolls down the page periodically, in human-like increments, instead of jumping straight to the bottom. After each scroll, it monitors network activity and DOM changes, if the page loads new items or the DOM height increases, the agent recognizes a "Lazy Load" event and waits until the content stabilizes. This approach not only mimics human browsing behavior but also allows users to control scrape depth with simple parameters like max page, leaving the complex navigation logic entirely to the agent.
 
+https://github.com/Riandra4trend/CompfestAIC/blob/main/Lazy%20loa.gif
+
 Once the agent successfully identifies the pagination type, whether Next Button, Infinite Scroll, or Load More, it transitions from understanding the structure to acting on it. Because the system already detects lazy-loading triggers through iterative scrolling, it can fully automate the entire navigation sequence, scrolling in controlled increments to surface hidden items, waiting for load contents, or clicking through paginated URLs as needed. Combined, these capabilities transform the agent from a passive classifier into an autonomous navigator, capable of reliably exploring the full breadth of diverse website structures without requiring the user to script a single rule.
 
 ---
