@@ -39,13 +39,13 @@ Once we obtained a clean HTML structure, one challenge remained: truncation coul
 
 This large-scale analysis revealed a consistent pattern: pagination and navigation logic almost always reside in the lower segments of the document. Building on this insight, we adopt a bottom-focused extraction strategy. Instead of feeding the entire cleaned HTML to the model, we route the document through a specialized funnel that preserves only the essential structural components—specifically isolating the segment where navigation controls are physically rendered. This guarantees reliable detection of pagination while keeping processing efficient and robust.
 
-> *{Placeholder: Diagram showing the pipeline: Raw HTML -> Noise Elimination -> Structural Collapse -> Bottom-Focused Context -> Classification Engine}*
+![Flow HTML](https://github.com/Riandra4trend/CompfestAIC/blob/main/Flow.png)
 
 In this pipeline, the raw HTML is ingested, stripped of noise, structurally collapsed to remove redundancy, and finally truncated to the bottom context before entering the Classification Engine. This approach ensures high-precision detection with minimal token usage, enabling significantly faster classification. 
 
 Detecting the navigation type is only half the battle; the agent must also respect the timing of the web. Many scrapers fail because they try to extract data before the browser has finished rendering content. To solve this, we implemented Iterative Scrolling, where the agent scrolls down the page periodically, in human-like increments, instead of jumping straight to the bottom. After each scroll, it monitors network activity and DOM changes, if the page loads new items or the DOM height increases, the agent recognizes a "Lazy Load" event and waits until the content stabilizes. This approach not only mimics human browsing behavior but also allows users to control scrape depth with simple parameters like max page, leaving the complex navigation logic entirely to the agent.
 
-https://github.com/Riandra4trend/CompfestAIC/blob/main/Lazy%20loa.gif
+![Lazy Load & Iterative scroll](https://github.com/Riandra4trend/CompfestAIC/blob/main/Lazy%20loa.gif)
 
 Once the agent successfully identifies the pagination type, whether Next Button, Infinite Scroll, or Load More, it transitions from understanding the structure to acting on it. Because the system already detects lazy-loading triggers through iterative scrolling, it can fully automate the entire navigation sequence, scrolling in controlled increments to surface hidden items, waiting for load contents, or clicking through paginated URLs as needed. Combined, these capabilities transform the agent from a passive classifier into an autonomous navigator, capable of reliably exploring the full breadth of diverse website structures without requiring the user to script a single rule.
 
