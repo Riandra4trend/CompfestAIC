@@ -45,7 +45,7 @@ In this pipeline, the raw HTML is ingested, stripped of noise, structurally coll
 
 Detecting the navigation type is only half the battle; the agent must also respect the timing of the web. Many scrapers fail because they try to extract data before the browser has finished rendering content. To solve this, we implemented Iterative Scrolling, where the agent scrolls down the page periodically, in human-like increments, instead of jumping straight to the bottom. After each scroll, it monitors network activity and DOM changes, if the page loads new items or the DOM height increases, the agent recognizes a "Lazy Load" event and waits until the content stabilizes. This approach not only mimics human browsing behavior but also allows users to control scrape depth with simple parameters like max page, leaving the complex navigation logic entirely to the agent.
 
-![Lazy Load & Iteratife scroll GIF](https://raw.githubusercontent.com/Riandra4trend/CompfestAIC/main/Flow%201%262.gif?raw=true)
+![Lazy Load & Iteratife scroll GIF](https://github.com/Riandra4trend/CompfestAIC/blob/main/iterative%20scroll%20%26%20lazy%20loaa.gif)
 
 Once the agent successfully identifies the pagination type, whether Next Button, Infinite Scroll, or Load More, it transitions from understanding the structure to acting on it. Because the system already detects lazy-loading triggers through iterative scrolling, it can fully automate the entire navigation sequence, scrolling in controlled increments to surface hidden items, waiting for load contents, or clicking through paginated URLs as needed. Combined, these capabilities transform the agent from a passive classifier into an autonomous navigator, capable of reliably exploring the full breadth of diverse website structures without requiring the user to script a single rule.
 
@@ -57,15 +57,15 @@ The biggest hurdle in automated scraping is "visual ambiguity," where elements l
 
 Many product cards include internal image sliders with small “Next” arrows, a pattern we refer to as the **Carousel Trap**. These arrows frequently generate false positives for automated navigation systems. From a CSS-selector perspective, the elements look indistinguishable from global pagination controls; however, clicking them only cycles through product photos rather than advancing to the next page of results. To avoid this misclassification, our approach evaluates the structural context of the element. When a “Next” button is found inside a repeated list item, such as within a product card, we treat it as a local UI component instead of a global navigation mechanism.
 
-> *{Placeholder: picture of Fake Next Button – example: Liveinalabama}*
+![liveinalabama picture](https://github.com/Riandra4trend/CompfestAIC/blob/main/liveinalabama.png)
 
 In addition, some platforms use what we call **Fake Infinite Scroll**, a user experience pattern where the page initially behaves like an infinite scroll, automatically loading content as the user scrolls. However, after a certain depth, the automatic loading stops to conserve backend resources, requiring the user to interact with a hidden or newly revealed control to continue. For instance, Tokopedia sometimes shows the first batch of products automatically, but deeper results require clicking a “Load More” button. A naïve infinite-scroll crawler would stall, endlessly waiting for content that never arrives. To handle this, our agent uses a **timeout-driven approach**, so if there is no new content appears after scrolling for a set duration, it triggers a full DOM re-scan to detect any fallback mechanism, such as a “Load More” button or hidden pagination link.
 
-> *{Placeholder: picture of Fake Infinite Scroll – example: Tokopedia}*
+![Fake Infinite scroll](https://github.com/Riandra4trend/CompfestAIC/blob/main/tokopeia%20small.mp4)
 
 We also see a more intricate pattern called **Hybrid Navigation**, commonly used by large media platforms. These systems start by loading content via infinite scroll but then switch to a button-based model after a certain threshold. You can see this on YouTube: videos keep loading automatically, but at some point, a “Show More” button or footer element appears to reveal additional items. Instead of assuming navigation is fixed at page load, our agent continuously monitors the page. If scrolling stops yielding new items, it immediately checks the bottom of the page for buttons or hidden links that appear after the infinite-scroll phase. This allows smooth extraction even when the navigation model changes mid-session.
 
-> *{Placeholder: picture of Hybrid Navigation – example: YouTube}*
+![Hybrid Pagination](https://github.com/Riandra4trend/CompfestAIC/blob/main/youtube%20small.mp4)
 
 The **Listing Agent** shows that reliable extraction doesn’t come from fragile, per-site selectors or assuming a single interaction pattern. Each page is treated as a live environment to observe, probe, and classify. By combining human-like scrolling, click interactions, DOM normalization, behavioral checks, and domain-level caching, the agent achieves consistent and repeatable results across diverse site architectures while keeping operational costs predictable. This approach shifts the focus from brittle, site-specific engineering to a generalized, testable pipeline, which already demonstrates strong results in production and provides a solid foundation for further improvements.
 
